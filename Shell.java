@@ -1,4 +1,3 @@
-
 /**
  * Shell.java.
  *
@@ -11,7 +10,7 @@ public class Shell
 
     //----------------------------------------------------------------
     /**
-     * Constructor.
+     * Program.
      *
      */
     public Shell()
