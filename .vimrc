@@ -45,4 +45,7 @@ set softtabstop=4
 set expandtab
 
 " correct backspace key
-set backspace=indent,eol,start 
+set backspace=indent,eol,start
+
+" sets color scheme
+colorscheme torte
