@@ -1,4 +1,4 @@
-" et 'nocompatible' to ward off unexpected things that your distro might
+" set 'nocompatible' to ward off unexpected things that your distro might
 " have made, as well as sanely reset options when re-sourcing .vimrc
 set nocompatible
 
@@ -44,4 +44,5 @@ set shiftwidth=4
 set softtabstop=4
 set expandtab
 
-
+" correct backspace key
+set backspace=indent,eol,start 
