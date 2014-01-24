@@ -13,19 +13,24 @@ public class problem4
 */
     public problem4()
     {
-        int j = 999;
-        int i = 999;
-        while( i >= 100 )
+        int x = -1;
+        int y = -1;
+        int largestPalindrome = 1;
+        for( int i = 999; i >= 100; i-- )
         {
-            if( isPalindrome( Integer.toString( i * j ) ) )
-                break;
-            j--;
-            if( isPalindrome( Integer.toString( i * j ) ) )
-                break;
-            i--;
+            int limit = largestPalindrome / i;
+            for( int j = i; j > limit; j--)
+            {
+                if( isPalindrome( Integer.toString( i * j ) ) )
+                {
+                    x = i;
+                    y = j;
+                    largestPalindrome = i * j;
+                    break;
+                }
+            }
         }
-        String largestPalindrome = Integer.toString( i * j );
-        System.out.println( i + " * " + j + " = " + largestPalindrome );
+        System.out.println( x + " * " + y + " = " + largestPalindrome );
 
     }
 /**

@@ -40,31 +40,35 @@ public class problem11
         {
             for( int b = 0; b < grid[a].length; b++ )// for each number
             {
-                for( int i = -1; i <= 1; i+=1 )//for each direction
+                for( int i = -1; i <= 1; i++ )//for each direction
                 {
-                    for( int j = -1; j <= 1; j+=1 ) //for each direction
+                    for( int j = -1; j <= 1; j++ ) //for each direction
                     {
-                        try
+                        if( i == 0 && j == 0 )
                         {
-                            int product = grid[a][b];
-                            for( int k = 1; k <= 3; k++ )
+
+                        }
+                        else
+                        {
+                            try
                             {
-                                product*= grid[a + i * k][b + j * k];
-                            }
-                            if( product > greatestProduct )
-                            {
-                                greatestProduct = product;
-                                nums[0] = grid[a][b];
+                                int product = grid[a][b];
                                 for( int k = 1; k <= 3; k++ )
                                 {
-                                    nums[k] = grid[a + i * k][b + j * k];
+                                    product *= grid[a + i * k][b + j * k];
                                 }
-                                
+                                if( product > greatestProduct )
+                                {
+                                    greatestProduct = product;
+                                    nums[0] = grid[a][b];
+                                    for( int k = 1; k <= 3; k++ )
+                                        nums[k] = grid[a + i * k][b + j * k];
+                                    
+                                }
                             }
-                        }
-                        catch(Exception e)
-                        {
-                            System.out.println( "Merp" );
+                            catch(Exception e)
+                            {
+                            }
                         }
                     }
                 }
