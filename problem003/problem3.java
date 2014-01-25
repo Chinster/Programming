@@ -40,8 +40,8 @@ public class problem3
             if( otherFactor%i == 0 )
             {
                 otherFactor = otherFactor/i;
-                returnArray.add( new Integer( i ) );
-                i = 2;
+                returnArray.add( new Integer( (int)i ) );
+                i = 1;
             }
         }
         returnArray.add( new Integer( (int)otherFactor ) );
