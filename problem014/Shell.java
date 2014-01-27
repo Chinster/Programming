@@ -1,18 +1,18 @@
 /**
- * Project Euler - Problem X Solution
- * Shell.java.
+ * Project Euler - Problem 14 Solution
+ * problem14.java.
  *
  * @author Christopher Chin
  *
  */
-public class Shell
+public class problem14
 {
     
     /**
      * Program.
      *
      */
-    public Shell()
+    public problem14()
     {
 
 
@@ -25,6 +25,6 @@ public class Shell
      */
     public static void main( String[] args )
     {
-        new Shell();
+        new problem14();
     }
 }

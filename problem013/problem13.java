@@ -32,10 +32,14 @@ public class problem13
                 else
                     theHolyNumber = "";
             }
+            long sum = 0;
             for( String c: numbers )
             {
-                System.out.println( "50-digit num: " + c );
+                String firstTen = c.substring( 0, 15 );
+                long number = Long.parseLong( firstTen );
+                sum += number;
             }
+            System.out.println( sum );
         }
         catch( FileNotFoundException e )
         {
