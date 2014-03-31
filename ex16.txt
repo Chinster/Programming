@@ -1,0 +1,3 @@
+Works even when the file exists
+touch BarrackObama
+echo '10/10' > BarrackObama
