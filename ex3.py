@@ -1,3 +1,5 @@
+# Exercise 3: Numbers and Math
+
 print ("Doing math in python:")
 
 # Python 3 seems to automatically divide with floating point numbers.

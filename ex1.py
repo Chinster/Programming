@@ -1,3 +1,5 @@
+# Exercise 1: A Good First Program
+
 # print is a function in python 3
 # print() works in python 2 though
 
