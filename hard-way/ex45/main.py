@@ -1,3 +1,7 @@
+import datetime
+total_clicks = 0
+combos = 0
+prev_time = datetime.timedelta(-999, -999)
 """Gets a single char."""
 class Getch:
     def __init__(self):
@@ -30,27 +34,35 @@ class GetchWindows:
         return msvcrt.getch()
 
 getch = Getch()
+
+
 print( "Press a key repeatedly... q to quit" )
 start_key = getch()
 
-import time
-start_time = time.time()
-
+start_time = datetime.datetime.now()
 inGame = True
 while inGame:
     end_key = getch()
     if end_key == 'q':
         inGame = False
     elif end_key == start_key:
-        end_time = time.time()
-        diff_time = end_time - start_time
-        diff_tots = int(diff_time)
-        diff_ms = (diff_time - diff_tots) * 3
-        diff_s = diff_tots % 60
-        diff_m = (diff_tots / 60) % 60
-        diff_h = diff_tots / 3600
-        print( "%i:%i:%i:%f" % (diff_h, diff_m, diff_s, diff_ms ) )
+        total_clicks += 1
+        end_time = datetime.datetime.now()
+        time_delta = end_time - start_time
+        combo_delta = time_delta - prev_time
+        if combo_delta.seconds == 0 and combo_delta.microseconds < 250000 and combo_delta.microseconds > -250000:
+            combos += 1
+        else:
+            combos = 0
+        prev_time = time_delta
+        time_delta_str = str(time_delta).replace('.', ':')
+        if combos == 0:
+            print("%i\t%s" % (total_clicks, time_delta_str))
+        else:
+            print("%i\t%s\t%i" % (total_clicks, time_delta_str, combos))
         start_time = end_time
     else:
         start_key = end_key
+        total_clicks = 0
+        combos = 0
 
