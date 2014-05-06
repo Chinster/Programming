@@ -1,7 +1,7 @@
 import datetime
 total_clicks = 0
 combos = 0
-prev_time = datetime.timedelta(-999, -999)
+prev_time = datetime.timedelta(1, 300)
 """Gets a single char."""
 class Getch:
     def __init__(self):
@@ -49,8 +49,8 @@ while inGame:
         total_clicks += 1
         end_time = datetime.datetime.now()
         time_delta = end_time - start_time
-        combo_delta = time_delta - prev_time
-        if combo_delta.seconds == 0 and combo_delta.microseconds < 250000 and combo_delta.microseconds > -250000:
+        combo_delta = abs(time_delta - prev_time)
+        if combo_delta.seconds == 0 and combo_delta.microseconds < 60000:
             combos += 1
         else:
             combos = 0
@@ -59,7 +59,7 @@ while inGame:
         if combos == 0:
             print("%i\t%s" % (total_clicks, time_delta_str))
         else:
-            print("%i\t%s\t%i" % (total_clicks, time_delta_str, combos))
+            print("%i\t%s\tCombo:%i" % (total_clicks, time_delta_str, combos))
         start_time = end_time
     else:
         start_key = end_key
