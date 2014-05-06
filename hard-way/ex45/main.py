@@ -36,13 +36,21 @@ start_key = getch()
 import time
 start_time = time.time()
 
-boolean inGame = True
+inGame = True
 while inGame:
     end_key = getch()
     if end_key == 'q':
-        inGame = false
-    elif end_key == start_key
+        inGame = False
+    elif end_key == start_key:
         end_time = time.time()
         diff_time = end_time - start_time
-        
+        diff_tots = int(diff_time)
+        diff_ms = (diff_time - diff_tots) * 3
+        diff_s = diff_tots % 60
+        diff_m = (diff_tots / 60) % 60
+        diff_h = diff_tots / 3600
+        print( "%i:%i:%i:%f" % (diff_h, diff_m, diff_s, diff_ms ) )
+        start_time = end_time
+    else:
+        start_key = end_key
 
