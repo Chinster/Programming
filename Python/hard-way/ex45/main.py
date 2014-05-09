@@ -35,7 +35,7 @@ class GetchWindows:
 
 getch = Getch()
 
-
+bps = input( "Beats per second? " )
 print( "Press a key repeatedly... q to quit" )
 start_key = getch()
 
