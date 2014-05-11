@@ -3,7 +3,7 @@ import random
 total_clicks = 0
 combos = 0
 inGame = True
-difficulty = 45000 #within 50000microseconds from 1bps. 
+difficulty = 45000 #within x microseconds from 1bps. 
 talent = 7000
 compliments = [ 
     "Much good. Very accurate. Wow.",
