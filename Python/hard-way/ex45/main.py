@@ -105,7 +105,7 @@ while inGame:
         else:
             if isTalented:
                 rand = random.randint(0, len(compliments))
-                print("%i\t%s\tSuper Combo: %i\t%s" % (total_clicks, time_delta_str, combos, compliments[rand]))
+                print("%i\t%s\tSuper Combo! %i\t%s" % (total_clicks, time_delta_str, combos, compliments[rand]))
             else:
                 print("%i\t%s\tCombo:%i" % (total_clicks, time_delta_str, combos))
         start_time = end_time
