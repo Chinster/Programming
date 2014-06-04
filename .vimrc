@@ -3,8 +3,7 @@
 set nocompatible
 
 " Attempt to determine the type of a file based on its name and possibly its
-" contents. Use this to allow intelligent auto-indenting for each filetype,
-" and for plugins that are filetype specific.
+" contents. 
 filetype indent plugin on
 
 " Enable syntax highlighting
@@ -48,4 +47,10 @@ set expandtab
 set backspace=indent,eol,start
 
 " sets color scheme
-colorscheme torte
+colorscheme evening
+
+" Highlight row
+set cursorline
+highlight CursorLine ctermbg=5
+set rightleft
+

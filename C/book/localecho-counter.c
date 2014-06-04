@@ -6,7 +6,7 @@
 /* Receives characters and prints them out.*/
 main(){
     int c, nc, nl, nw, state;
-    nc = nl = nw = 0;
+    nc = nl = nw = 0; //num char, line, word.
     state = OUT;
     while((c = getchar()) != EOF){
         putchar(c);
