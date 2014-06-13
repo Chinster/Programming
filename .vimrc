@@ -51,6 +51,3 @@ colorscheme evening
 
 " Highlight row
 set cursorline
-highlight CursorLine ctermbg=5
-set rightleft
-
