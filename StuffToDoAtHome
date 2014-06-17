@@ -1,0 +1,7 @@
+::: blockdev --getalignoff /dev/sda
+::: Run firmware upgrade for SSD perhaps use Windows
+::: edit /etc/sysctl.d/99-sysctl.conf, add vm.swappiness=1; vm.vfs_cache_pressure=50
+::: Maximizing performance article
+::: xmodmap -pke > ~/.Xmodmap
+::: Synaptics configuring?
+
