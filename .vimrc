@@ -49,5 +49,3 @@ set backspace=indent,eol,start
 " sets color scheme
 colorscheme evening
 
-" Highlight row
-set cursorline
