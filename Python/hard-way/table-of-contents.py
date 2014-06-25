@@ -1,3 +1,4 @@
+print("""
 Exercise 0: The Setup
 Exercise 1: A Good First Program
 Exercise 2: Comments And Pound Characters
@@ -51,3 +52,5 @@ Exercise 49: Making Sentences
 Exercise 50: Your First Website
 Exercise 51: Getting Input From A Browser
 Exercise 52: The Start Of Your Web Game
+Which exercise do you want to view? 
+""")
