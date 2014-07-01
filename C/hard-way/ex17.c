@@ -100,9 +100,12 @@ void Database_set(struct Connection *conn, int id,
 
     addr->set = 1;
     char *res = strncpy(addr->name, name, MAX_DATA);
+    res[MAX_DATA - 1] = '\0';
+
     if(!res) die("Name copy failed");
 
     res = strncpy(addr->email, email, MAX_DATA);
+    res[MAX_DATA - 1] = '\0';
     if(!res) die("Email copy failed");
 }
 
