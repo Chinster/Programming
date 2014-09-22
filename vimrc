@@ -2,7 +2,7 @@
 " have made, as well as sanely reset options when re-sourcing .vimrc
 set nocompatible
 " Attempt to determine the type of a file based on its name and possibly its
-" contents. 
+" contents.
 filetype indent plugin on
 " Better command-line completion
 set wildmenu
