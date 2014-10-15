@@ -1,4 +1,4 @@
-# Exercise 12: Propmting People
+# Exercise 12: Prompting People
 
 age = input( "How old are you? ")
 height = input( "How tall are you? ")

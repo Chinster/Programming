@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     check(in != NULL, "Failed to read age.");
     check(temp == 0, "We want a real number!");
     you.age = atoi(temp);
-    
+
     //int rc = fscanf(stdin, "%d", &you.age);
     //check(rc > 0, "You have to enter a number.");
 

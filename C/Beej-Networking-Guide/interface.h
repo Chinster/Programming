@@ -1,5 +1,5 @@
 struct addrinfo {
-    int             ai_flags;       
+    int             ai_flags;
     int             ai_family;      // AF_INET, AF_INET6, AF_UNSPEC
     int             ai_socktype;
     int             ai_protocol;
@@ -17,7 +17,7 @@ struct sockaddr {
 
 // IPv4 Only.
 // parallel struct with sockaddr. sockaddr_in and sockaddr can be casted to each other.
-struct sockaddr_in { 
+struct sockaddr_in {
     short int           sin_family;  // address family, AF_INET
     unsigned short int  sin_port;    // Port number. Network Byte Order. htons()
     struct in_addr      sin_addr;    // Internet address
@@ -26,7 +26,7 @@ struct sockaddr_in {
 
 
 // IPv4 Address.
-struct in_addr { 
+struct in_addr {
     uint32_t s_addr; // 32-bit int in Network Byte Order
 };
 
