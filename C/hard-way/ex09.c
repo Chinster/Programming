@@ -1,7 +1,8 @@
 // Arrays and Strings
 #include <stdio.h>
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[])
+{
     int numbers[4] = {1};
     char name[4] = {'a'};
 

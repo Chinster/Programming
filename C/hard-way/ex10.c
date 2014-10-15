@@ -1,10 +1,11 @@
 // Arrays of Strings, Looping
 #include <stdio.h>
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[])
+{
     int i;
 
-    for(i = 1; i < argc; i++){
+    for (i = 1; i < argc; i++) {
         printf("arg %d: %s\n", i, argv[i]);
     }
 
@@ -13,7 +14,7 @@ int main(int argc, char *argv[]){
     };
     int num_states = 4;
 
-    for(i = 0; i < num_states; i++){
+    for (i = 0; i < num_states; i++) {
         printf("state %d: %s\n", i, states[i]);
     }
 

@@ -1,9 +1,10 @@
 // While-Loop and Boolean Expressions
 #include <stdio.h>
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[])
+{
     int i = 0;
-    while(i < argc){
+    while (i < argc) {
         printf("arg %d: %s\n", i, argv[i]);
         i++;
     }
@@ -13,7 +14,7 @@ int main(int argc, char *argv[]){
 
     int num_states = 4;
     i = 0;
-    while(i< num_states){
+    while (i< num_states) {
         printf("state %d: %s\n", i, states[i]);
         i++;
     }

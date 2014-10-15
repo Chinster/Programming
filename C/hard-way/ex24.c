@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
     //check(rc > 0, "You have to enter a number.");
 
     printf("What color are your eyes:\n");
-    for(i = 0; i <= OTHER_EYES; i++) {
+    for (i = 0; i <= OTHER_EYES; i++) {
         printf("%d) %s\n", i + 1, EYE_COLOR_NAMES[i]);
     }
     printf("> ");

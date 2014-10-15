@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct Person{
+struct Person {
     char *name;
     int age;
     int height;
@@ -12,7 +12,7 @@ struct Person{
 };
 
 // Returns an entire struct!
-struct Person Person_create(char *name, int age, int height, int weight){
+struct Person Person_create(char *name, int age, int height, int weight) {
     struct Person who = {name, age, height, weight};
     return who;
 }
@@ -24,11 +24,10 @@ void Person_print(struct Person who){
     printf("\tweight: %d\n", who.weight);
 }
 
-int main(int argc, char *argv[]){
-    struct Person joe = Person_create(
-            "Joseph Puzzo", 20, 66, 130);
-    struct Person sam = Person_create(
-            "Samuel Harada", 19, 62, 140);
+int main(int argc, char *argv[])
+{
+    struct Person joe = Person_create( "Joseph Puzzo", 20, 66, 130);
+    struct Person sam = Person_create( "Samuel Harada", 19, 62, 140);
     Person_print(joe);
     Person_print(sam);
 

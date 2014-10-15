@@ -46,8 +46,8 @@ int test_check(char * file_name)
     return 0;
 
 error:
-    if(block) free(block);
-    if(input) fclose(input);
+    if (block) free(block);
+    if (input) fclose(input);
     return -1;
 }
 
@@ -56,7 +56,7 @@ int test_sentinel(int code)
     char *temp = malloc(100);
     check_mem(temp);
 
-    switch(code) {
+    switch (code) {
         case 1:
             log_info("It worked.");
             break;
@@ -68,7 +68,7 @@ int test_sentinel(int code)
     return 0;
 
 error:
-    if(temp) free(temp);
+    if (temp) free(temp);
     return -1;
 }
 

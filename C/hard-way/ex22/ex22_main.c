@@ -7,9 +7,8 @@ void scope_demo(int count)
 {
     log_info("Count is: %d", count);
 
-    if(count > 10) {
-        int count = 100; // Bug here.
-
+    if (count > 10) {
+        int count = 100; // Bug here. count is local;
         log_info("Count in this scope is %d", count);
     }
 
