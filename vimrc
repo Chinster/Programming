@@ -33,5 +33,6 @@ set expandtab
 set backspace=indent,eol,start
 " Enable syntax highlighting
 syntax on
-" sets color scheme
-colorscheme evening
+" Makes things colorful
+set t_Co=256
+colorscheme jellybeans
