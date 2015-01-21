@@ -198,8 +198,9 @@ int main(int argc, char *argv[])
     printf("You enter the ");
     game->location->_(describe)(game->location);
 
-    while (true) {
-        process_input(game);
+    bool ingame;
+    while (ingame) {
+        ingame = process_input(game);
     }
 
     return 0;
