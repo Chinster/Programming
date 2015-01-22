@@ -1,6 +1,7 @@
 " Vim color file
 " Name:    gentooish.vim
 " Author:  Brian Carper<brian@briancarper.net>
+" Editted: Christopher Chin for slightly higher contrast
 " Version: 0.3
 
 set background=dark
