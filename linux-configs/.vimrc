@@ -36,3 +36,6 @@ syntax on
 " Makes things colorful
 set t_Co=256
 colorscheme jellybeans
+
+set colorcolumns=80
+set cursorline
