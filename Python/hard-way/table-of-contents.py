@@ -1,3 +1,9 @@
+# Alllows you to quickly look through programs written for Learn Python the
+# Hard Way. This is meant to be a simple program so there isn't any error
+# checking.
+
+import os.path
+
 def showExercises():
     print("""
     Exercise 0: The Setup
@@ -54,16 +60,30 @@ def showExercises():
     Exercise 51: Getting Input From A Browser
     Exercise 52: The Start Of Your Web Game
     """)
-showExercises()
-quitting = False
-while not quitting:
-    response = input("> ")
-    if response == -1:
-        showExercises()
-    elif response < 10:
-        file_name = "ex0" + str(response) + ".py"
-    else:
-        file_name = "ex" + str(response) + ".py"
-    file = open(file_name)
-    print(file.read())
-    file.close()
+
+def main():
+    showExercises()
+    print("Select an exercise 0-52: ")
+    while True:
+        response = input("")
+        try:
+            if int(response) > 0 and int(response) < 10:
+                file_name = "ex0" + str(response) + ".py"
+            elif int(response) > 9 and int(response) < 43:
+                file_name = "ex" + str(response) + ".py"
+            else:
+                response = input("Do you want to quit? ")
+                if str(response) == "yes" or str(response) == "y":
+                    return 0
+                else:
+                    showExercises()
+                    continue
+        except ValueError:
+            break;
+
+        target = open(file_name)
+        if (os.path.isfile(str(file_name))):
+            print(target.read())
+        target.close()
+
+main()
