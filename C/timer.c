@@ -10,7 +10,7 @@ int main(){
     //
     end = clock();
     time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-   
+
     printf("Time spent: %f\n", time_spent);
     return 0;
 }
