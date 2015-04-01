@@ -35,7 +35,7 @@ set backspace=indent,eol,start
 syntax on
 " Makes things colorful
 set t_Co=256
-colorscheme jellybeans
+colorscheme gentooish
 
-set colorcolumns=80
+set colorcolumn=80
 set cursorline
