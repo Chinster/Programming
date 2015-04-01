@@ -34,7 +34,7 @@ static int get_line (char *prompt, char *buff, size_t s) {
     return OK;
 }
 
-/* Receives a number under 64 and returns a char would represents it.
+/* Receives a number under 64 and returns an integern that would represents it.
  * If called on non-64 digit behavior is undefined
  */
 char num_to_base64(char digit)
@@ -44,7 +44,7 @@ char num_to_base64(char digit)
     else if (digit < 52)
         return digit + 'a' - 26;
     else if (digit < 62)
-        return digit +'0' - 52;
+        return digit + '0' - 52;
     else if (digit == 62)
         return '+';
     else if (digit == 63)
@@ -53,22 +53,11 @@ char num_to_base64(char digit)
         return '-';
 }
 
-/* Takes a hex string and prints out its base64 equivalent string.
- * Returns -1 on failure.
- */
-int hex_to_base64(char *input)
-{
-    int length = strlen(input);
-    for (int i = 1; i <= length; i++) {
-        input[length - i]
-    }
-}
-
 /* Converts a character to a value from 0-15,
  * its numerical interpretation in hex.
  * Returns -1 on failure;
  */
-int char_to_hex(char hex)
+char char_to_hex(char hex)
 {
     if (hex >= '0' && hex <= '9')
         return hex - '0';
@@ -77,18 +66,48 @@ int char_to_hex(char hex)
     return -1;
 }
 
+/* Takes three hex digits and prints out their representation as two base64
+ * digits.
+ */
+void num3_to_base64(char num1, char num2, char num3)
+{
+    // Split the digits of num2 between num1 and num3
+    char first = (num1 << 2) | ((num2 & 0xc) >> 2);
+    char second = (num3) | (num2 & 0x3) << 4;
+    printf("%c%c", num_to_base64(first), num_to_base64(second));
+}
+
+/* Receives lines from standard input and converts tries to convert the hex
+ * characters to base64. Behavior is likely undefined when not given hex string
+ */
 int stdin_to_double()
 {
-    double number = 0;
     char *input = malloc(sizeof(char) * MAX_BUFF);
 
     while (get_line("", input, MAX_BUFF) == 0) {
         int len = strlen(input);
-        int extra = (len % 3) * 2; // 12 bits is a multiple of 6
+        int extra = (len % 3);
 
-        if (hex_to_base64(input)) {
-            continue;
+        // Every 3 hex holds 12 data bits and 2 base64
+        if (extra == 1) {
+            char hex = char_to_hex(*input++);
+            printf("%c", num_to_base64(hex));
         }
+        else if (extra == 2) {
+            char hex1 = char_to_hex(*input++);
+            char hex2 = char_to_hex(*input++);
+            // We have 8 data bits so pad the leading 2.
+            hex2 |= (hex1 & 0x3) << 4;
+            hex1 = (hex1 >> 2) & 0x3;
+            printf("%c%c", num_to_base64(hex1), num_to_base64(hex2));
+        }
+        while (*input != '\0') {
+            char hex1 = char_to_hex(*input++);
+            char hex2 = char_to_hex(*input++);
+            char hex3 = char_to_hex(*input++);
+            num3_to_base64(hex1, hex2, hex3);
+        }
+        printf("\n");
     }
 
     free(input);
