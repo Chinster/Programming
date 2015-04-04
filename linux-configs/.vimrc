@@ -1,9 +1,16 @@
-" set 'nocompatible' to ward off unexpected things that your distro might
-" have made, as well as sanely reset options when re-sourcing .vimrc
 set nocompatible
-" Attempt to determine the type of a file based on its name and possibly its
-" contents.
+filetype off
+
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+Plugin 'gmarik/Vundle.vim'
+Plugin 'rust-lang/rust.vim'
+Plugin 'scrooloose/syntastic'
+
+call vundle#end()
 filetype indent plugin on
+
 " Better command-line completion
 set wildmenu
 " Show partial commands in the last line of the screen
@@ -39,3 +46,6 @@ colorscheme gentooish
 
 set colorcolumn=80
 set cursorline
+
+" Save file as sudo
+cmap w!! w !sudo tee > /dev/null %
