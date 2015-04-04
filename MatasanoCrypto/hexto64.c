@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include "hex_con.h"
 
 #define MAX_BUFF 256
 /* Sanitized getline from paxdiablo on stackoverflow.com
@@ -33,43 +34,10 @@ static int get_line (char *prompt, char *buff, size_t s) {
     buff[strlen(buff)-1] = '\0';
     return OK;
 }
-
-/* Receives a number under 64 and returns an integern that would represents it.
- * If called on non-64 digit behavior is undefined
- */
-char num_to_base64(char digit)
-{
-    if (digit < 26)
-        return digit + 'A';
-    else if (digit < 52)
-        return digit + 'a' - 26;
-    else if (digit < 62)
-        return digit + '0' - 52;
-    else if (digit == 62)
-        return '+';
-    else if (digit == 63)
-        return '/';
-    else
-        return '-';
-}
-
-/* Converts a character to a value from 0-15,
- * its numerical interpretation in hex.
- * Returns -1 on failure;
- */
-char char_to_hex(char hex)
-{
-    if (hex >= '0' && hex <= '9')
-        return hex - '0';
-    if (hex >= 'a' && hex <= 'f')
-        return hex - 'a' + 10;
-    return -1;
-}
-
 /* Takes three hex digits and prints out their representation as two base64
  * digits.
  */
-void num3_to_base64(char num1, char num2, char num3)
+static void num3_to_base64(char num1, char num2, char num3)
 {
     // Split the digits of num2 between num1 and num3
     char first = (num1 << 2) | ((num2 & 0xc) >> 2);
@@ -80,7 +48,7 @@ void num3_to_base64(char num1, char num2, char num3)
 /* Receives lines from standard input and converts tries to convert the hex
  * characters to base64. Behavior is likely undefined when not given hex string
  */
-int stdin_to_double()
+static int stdin_to_double()
 {
     char *input = malloc(sizeof(char) * MAX_BUFF);
 
@@ -108,6 +76,8 @@ int stdin_to_double()
             num3_to_base64(hex1, hex2, hex3);
         }
         printf("\n");
+
+        input -= len;
     }
 
     free(input);
@@ -116,11 +86,6 @@ int stdin_to_double()
 
 int main(int argc, char *argv[])
 {
-    /*
-    if (argc > 1) {
-        for (int i = 1; i < argc; i++) {
-        }
-    }*/
     return stdin_to_double();
 }
 
