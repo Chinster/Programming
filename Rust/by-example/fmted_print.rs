@@ -1,7 +1,7 @@
 /// Usage of various formatted prints
 use std::fmt;
 
-pub fn _run() {
+fn main() {
     // `{}` is replaced with stringified arguments.
     println!("{} days", 31);
 
