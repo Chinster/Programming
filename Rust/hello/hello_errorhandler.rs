@@ -12,7 +12,7 @@ fn main() {
     // here unwrap() panics if readline returns None
     //io::stdin().read_line(&mut buffer).unwrap();
 
-    let input = io::stdin().read_line(&mut buffer)
+    let _input = io::stdin().read_line(&mut buffer)
                            .ok()  // Converts Result to Option
                            .expect("Failed to read line");
 
@@ -27,7 +27,7 @@ struct Info {
 
 // try! can only be used in a function that returns a Result<T, E>
 fn write_info(info: &Info) -> io::Result<()> {
-    let mut filel = try!(File::open("best_friend.txt"));
+    let mut file = try!(File::open("best_friend.txt"));
 
     try!(writeln!(&mut file, "name: {}", info.name));
     try!(writeln!(&mut file, "age: {}", info.age));

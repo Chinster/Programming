@@ -16,7 +16,7 @@ fn main() {
     }).join();
 
     // Create an atomic reference counted pointer
-    let data = Arc::new(Mutex::new(vec![1u32, 2, 3]));
+    let data = Arc::new(Mutex::new(vec![0; 20]));
 
     // Create a channel for synchronization with spawned threads
     // Any data with trait Send can be sent down channel
@@ -29,7 +29,7 @@ fn main() {
             // .lock() on a mutex returns a Result<T, E>
             // which could be an error. This code simply unwrap() the result.
             let mut data = data.lock().unwrap();
-            *data[i] += 1;
+            data[i] += 1;
 
             tx.send(());
         });
@@ -37,6 +37,12 @@ fn main() {
     for _ in 0..10 {
         rx.recv();
     }
+
+    for i in 0..10 {
+        let mut data = data.lock().unwrap();
+        print!("{} ", data[i]);
+    }
+
 
     let result = thread::spawn(move || {
         panic!("oh no!");
