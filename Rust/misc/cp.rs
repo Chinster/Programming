@@ -1,3 +1,4 @@
+#![feature(path_ext)]
 use std::io::prelude::*;
 use std::fs::File;
 use std::path::Path;
@@ -5,51 +6,64 @@ use std::env;
 
 /// Takes two paths, copies from the File at src to a File as dest
 fn cp(src: &Path, dest: &Path) {
-    let src: Result<_, _> = File::open(&src);
-    if let Err(cause) = src {
-        println!("cp: {}", cause);
-        return;
+    let mut src_f: File;
+    match File::open(&src) {
+        Ok(handle) => src_f = handle,
+        Err(cause) => {
+            println!("cp: {}", cause);
+            return;
+        }
     }
 
-    let dest: Result<_, _> = File::create(&dest);
-    if let Err(cause) = dest {
-        println!("cp: {}", cause);
-        return;
+    let mut dest_f: File;
+    match File::create(&dest) {
+        Ok(handle) => dest_f = handle,
+        Err(cause) => {
+            println!("cp: {}", cause);
+            return;
+        }
     }
 
     let mut src_bin = vec![];
-    if let Err(cause) = src.unwrap().read_to_end(&mut src_bin) {
+    if let Err(cause) = src_f.read_to_end(&mut src_bin) {
         println!("cp: {}", cause);
         return;
     }
-    if let Err(cause) = dest.unwrap().write_all(&src_bin) {
+    if let Err(cause) = dest_f.write_all(&src_bin) {
         println!("cp: {}", cause);
         return;
     }
 }
 
 fn parse_files(sources: Vec<String>, dest: String) {
-    if sources.len() == 1 {
+    let dest_is_dir = Path::new(&dest).is_dir();
+    if !dest_is_dir {
+        if sources.len() > 1 {
+            println!("cp: {} is not a directory.", dest);
+            return;
+        }
         let dest_path = Path::new(&dest);
         let src_path = Path::new(&sources[0]);
         cp(src_path, dest_path);
+        return;
     }
-    else {
-        for src in sources.iter() {
-            let src_path = Path::new(&src);
-            let file_name;
-            match src_path.file_name() {
-                Some(file) => file_name = file.to_str(),
-                None => {
-                    println!("cp: Omitting file {}", src);
-                    continue;
-                },
-            }
-            let dir_dest = file_name.unwrap().to_string() + &dest;
-            let dest_path = Path::new(&dir_dest);
-            cp(src_path, dest_path);
+
+    // Copy into directory.
+    for src in sources.iter() {
+        let src_path = Path::new(&src);
+        let file_name;
+        match src_path.file_name() {
+            Some(file) => file_name = file.to_str(),
+            None => {
+                println!("cp: Omitting file {}", src);
+                continue;
+            },
         }
+        let dir_dest = dest.clone() + "/" + file_name.unwrap();
+        let dest_path = Path::new(&dir_dest);
+        cp(src_path, dest_path);
     }
+    return;
 }
 
 fn main() {
