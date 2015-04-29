@@ -1,0 +1,6 @@
+[submodule "linux-configs/.vim/Vundle.vim"]
+	path = linux-configs/.vim/Vundle.vim
+	url = https://github.com/gmarik/Vundle.vim
+[submodule "linux-configs/.vim/bundle/Vundle.vim"]
+	path = linux-configs/.vim/bundle/Vundle.vim
+	url = https://github.com/gmarik/Vundle.vim
