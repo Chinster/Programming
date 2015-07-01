@@ -1,0 +1,7 @@
+[package]
+name = "cp"
+version = "0.1.0"
+authors = ["Christopher Chin <ctchin13@gmail.com>"]
+
+[dependencies]
+getopts = "0.2.11"
