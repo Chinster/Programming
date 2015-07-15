@@ -2,28 +2,27 @@
 extern crate getopts;
 
 use getopts::Options;
+use getopts::Matches;
 use std::io::prelude::*;
 use std::fs::File;
 use std::path::Path;
 use std::env;
 
-/// Takes two paths to files, copies from src to dest.
-fn cp(src: &Path, dest: &Path) {
-    let res = File::open(&src)
-                   .and_then(|mut file| {
-                       let mut src_bin = vec![];
-                       file.read_to_end(&mut src_bin)
-                           .map(|_| src_bin)
-                   })
-                   .and_then(|src_bin| {
-                       File::create(&dest)
-                            .and_then(|mut file| {
-                                file.write_all(&src_bin)
-                            })
-                   });
-    if res.is_err() {
-        println!("cp: {}", res.err().unwrap().to_string());
-    }
+/// Takes two paths to files, copies bytes from src to dest
+fn cp<P: AsRef<Path>>(src: P, dest: P) -> Option<std::io::Error> {
+    File::open(&src)
+         .and_then(|mut file| {
+             let mut src_bin = vec![];
+             file.read_to_end(&mut src_bin)
+                 .map(|_| src_bin)
+         })
+         .and_then(|src_bin| {
+             File::create(&dest)
+                 .and_then(|mut file| {
+                     file.write_all(&src_bin)
+                 })
+         })
+         .err()
 }
 
 fn print_usage(opts: Options) {
@@ -31,32 +30,60 @@ fn print_usage(opts: Options) {
     print!("{}", opts.usage(&menu));
 }
 
-fn parse_files(sources: Vec<String>, dest: String) {
-    if Path::new(&dest).is_dir() {
-        for src in sources.iter() {
-            let src_path = Path::new(&src);
-            let file_name;
-            match src_path.file_name() {
-                Some(file) => file_name = file.to_str(),
-                None => {
-                    println!("cp: Omitting file {}", src);
-                    continue;
-                },
-            }
-            let dir_dest = dest.clone() + "/" + file_name.unwrap();
-            let dest_path = Path::new(&dir_dest);
-            cp(src_path, dest_path);
+/// Determines if destination is dir.
+fn cp_branch(sources: Vec<&Path>, dest: &Path, matches: &Matches) {
+    // File to file case.
+    if !dest.is_dir() {
+        if sources.len() > 1 {
+            println!("cp: {} is not a directory.", dest.display());
+            return;
         }
+
+        let src_path = Path::new(&sources[0]);
+        if let Some(x) = cp(src_path, dest) {
+            println!("cp: {} for file {}", x, src_path.display());
+        }
+
         return;
     }
 
-    if sources.len() > 1 {
-        println!("cp: {} is not a directory.", dest);
-        return;
+    // Files to directory case
+    for src in sources.iter() {
+        let src_path = Path::new(&src);
+        if src_path.is_dir() {
+            if matches.opt_present("r") {
+                panic!("Unimplemented");
+                // Can't generate Path vector due to read_dir iter scope
+                /*
+                let read_dir = std::fs::read_dir(src_path).unwrap();
+                for f in read_dir {
+                    let f = f.unwrap().path();
+                    let new_src = f.as_path();
+                    let entry = vec![new_src];
+                    cp_branch(entry, dest, matches);
+                }
+                */
+            }
+            else {
+                println!("cp: Omitting directory {}", src.display());
+                continue;
+            }
+        }
+        else {
+            let file_name;
+            match src_path.file_name() {
+                Some(file) => file_name = file.to_str().unwrap(),
+                None => {
+                    println!("cp: Omitting file {}", src.display());
+                    continue;
+                },
+            }
+            let mut dest_buf = dest.to_path_buf();
+            dest_buf.push(file_name);
+            let dest_path = dest_buf.as_path();
+            cp(src_path, dest_path);
+        }
     }
-    let dest_path = Path::new(&dest);
-    let src_path = Path::new(&sources[0]);
-    cp(src_path, dest_path);
     return;
 }
 
@@ -76,9 +103,6 @@ fn main() {
         print_usage(opts);
         return;
     }
-    if matches.opt_present("r") {
-        println!("RECURSIVE!!!");
-    }
 
     let mut files = if !matches.free.is_empty() {
         matches.free.clone()
@@ -93,5 +117,10 @@ fn main() {
     }
 
     let dest = files.pop().unwrap();
-    parse_files(files, dest);
+    // Generate Vec<&Path>
+    let mut src_paths = Vec::new();
+    for i in 0..files.len() {
+        src_paths.push(Path::new(&files[i]));
+    }
+    cp_branch(src_paths, Path::new(&dest), &matches);
 }
