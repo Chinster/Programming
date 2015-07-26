@@ -9,7 +9,32 @@ use std::path::Path;
 use std::env;
 
 /// Takes two paths to files, copies bytes from src to dest
-fn cp<P: AsRef<Path>>(src: P, dest: P) -> Option<std::io::Error> {
+fn cp<P: AsRef<Path>>(src: P,
+                      dest: P,
+                      matches: &Matches) -> Option<std::io::Error> {
+    let src = src.as_ref();
+    let dest = dest.as_ref();
+
+    if src.is_dir() {
+        if matches.opt_present("r") {
+            // Acceptable error creating dir. Errors will pop up later.
+            std::fs::create_dir(dest);
+            let read_dir = std::fs::read_dir(&src).unwrap();
+            for entry in read_dir {
+                let entry_path = entry.unwrap().path();
+                let file_name = entry_path.file_name().unwrap().to_str().unwrap();
+
+                let mut dest_buf = dest.to_path_buf();
+                dest_buf.push(file_name);
+                cp(&entry_path, &dest_buf, matches);
+            }
+        }
+        else {
+            println!("cp: Omitting directory {}", src.display());
+        }
+        return None;
+    }
+
     File::open(&src)
          .and_then(|mut file| {
              let mut src_bin = vec![];
@@ -40,7 +65,8 @@ fn cp_branch(sources: Vec<&Path>, dest: &Path, matches: &Matches) {
         }
 
         let src_path = Path::new(&sources[0]);
-        if let Some(x) = cp(src_path, dest) {
+        if let Some(x) = cp(src_path, dest, &matches) {
+            // Print error
             println!("cp: {} for file {}", x, src_path.display());
         }
 
@@ -50,39 +76,18 @@ fn cp_branch(sources: Vec<&Path>, dest: &Path, matches: &Matches) {
     // Files to directory case
     for src in sources.iter() {
         let src_path = Path::new(&src);
-        if src_path.is_dir() {
-            if matches.opt_present("r") {
-                panic!("Unimplemented");
-                // Can't generate Path vector due to read_dir iter scope
-                /*
-                let read_dir = std::fs::read_dir(src_path).unwrap();
-                for f in read_dir {
-                    let f = f.unwrap().path();
-                    let new_src = f.as_path();
-                    let entry = vec![new_src];
-                    cp_branch(entry, dest, matches);
-                }
-                */
-            }
-            else {
-                println!("cp: Omitting directory {}", src.display());
+        let file_name;
+        match src_path.file_name() {
+            Some(file) => file_name = file.to_str().unwrap(),
+            None => {
+                println!("cp: Omitting file {}", src.display());
                 continue;
-            }
+            },
         }
-        else {
-            let file_name;
-            match src_path.file_name() {
-                Some(file) => file_name = file.to_str().unwrap(),
-                None => {
-                    println!("cp: Omitting file {}", src.display());
-                    continue;
-                },
-            }
-            let mut dest_buf = dest.to_path_buf();
-            dest_buf.push(file_name);
-            let dest_path = dest_buf.as_path();
-            cp(src_path, dest_path);
-        }
+        let mut dest_buf = dest.to_path_buf();
+        dest_buf.push(file_name);
+        let dest_path = dest_buf.as_path();
+        cp(src_path, dest_path, &matches);
     }
     return;
 }
