@@ -1,3 +1,4 @@
+/// A high level implementation of a shell
 use std::process::Command;
 use std::io;
 use std::io::prelude::*;

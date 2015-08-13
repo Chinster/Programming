@@ -1,20 +1,25 @@
-extern crate nix;
-use nix::sys::signal;
+use std::io::{Write, ErrorKind};
 
-extern fn handle_sigint(_: i32) {
-    println!("Interrupted!");
-    panic!();
+fn getline() -> Option<String> {
+    let mut buf = String::new();
+    match std::io::stdin().read_line(&mut buf) {
+        Ok(_) if buf.is_empty() => None,
+        Ok(_) => Some(buf),
+        Err(e) => {
+            writeln!(&mut std::io::stderr(), "{}", e).unwrap();
+            None
+        },
+    }
+}
+
+fn tokenize(cmd: String) -> Option<Vec<String>> {
+    let tokens = cmd.split_whitespace().collect();
+    Some(tokens)
 }
 
 fn main() {
-    let sig_action = signal::SigAction::new(handle_sigint,
-                                            signal::SockFlag::empty(),
-                                            signal::SigSet::empty());
-    unsafe {
-        signal::sigaction(signal::SIGINT, &sig_action);
-    }
-
     loop {
-
+        getline().and_then(tokenize);
+        // if None then return
     }
 }
