@@ -2,7 +2,7 @@
 
 int init_module()
 {
-    printk("Hello World!\n");
+    printk(KERN_DEBUG "Hello World!\n");
 
     return 0;
 }
