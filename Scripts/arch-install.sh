@@ -67,7 +67,7 @@ cp /etc/resolv.conf $ARCH_TARGET_DIR/etc/resolv.conf
 # creating an in-chroot script to run
 # We can not run commands in chroot from this script
 # call to chroot is given a script to run
-echo "export PS1='chroot
+echo "export PS1='chroot'
     rm /chroot-script.sh
     echo $HOSTNAME > /etc/hostname
     ln -s /usr/share/zoneinfo/America/New_York /etc/localtime
@@ -81,7 +81,7 @@ echo "export PS1='chroot
 # Install GRUB
 if [[ $INSTALL_GRUB -eq 1 ]]; then
     echo "mkdir -p /boot/grub/
-    echo \'$GRUB_CFG\' /boot/grub/grub.cfg
+    echo '$GRUB_CFG' > /boot/grub/grub.cfg
     grub-install --target=i386-pc $GRUB_DEV
     " >> $ARCH_TARGET_DIR/chroot-script.sh
 fi
