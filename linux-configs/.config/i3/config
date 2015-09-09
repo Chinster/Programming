@@ -3,7 +3,7 @@
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
 exec xrdb ~/.Xresources
-set $mod Mod1
+set $mod Mod4
 font pango:DejaVu Sans Mono 8
 
 # Window options
@@ -16,7 +16,7 @@ new_window pixel 2
 bindsym $mod+Return exec i3-sensible-terminal
 
 # start firefox
-bindsym $mod+ctrl+f exec firefox-developer
+bindsym $mod+ctrl+f exec firefox
 
 # kill focused window
 bindsym $mod+Shift+q kill

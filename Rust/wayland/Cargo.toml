@@ -1,0 +1,12 @@
+[package]
+name = "wayland"
+version = "0.1.0"
+authors = ["Christopher Chin <ctchin13@gmail.com>"]
+
+description = "FFI for wayland C headers"
+keywords = ["wayland"]
+repository = "https://github.com/Chinster/wayland"
+license = "MIT"
+
+[dependencies]
+libc = "0.1.6"

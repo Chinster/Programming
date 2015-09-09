@@ -1,0 +1,48 @@
+> make
+make -C /lib/modules/`uname -r`/build M=/home/user/Programming/C/Eudyptula/01-HelloWorld modules
+make[1]: Entering directory '/usr/lib/modules/4.1.5-1-ARCH/build'
+  CC [M]  /home/user/Programming/C/Eudyptula/01-HelloWorld/hello.o
+  Building modules, stage 2.
+  MODPOST 1 modules
+  CC      /home/user/Programming/C/Eudyptula/01-HelloWorld/hello.mod.o
+  LD [M]  /home/user/Programming/C/Eudyptula/01-HelloWorld/hello.ko
+make[1]: Leaving directory '/usr/lib/modules/4.1.5-1-ARCH/build'
+
+> modinfo hello.ko
+filename:       /home/user/Programming/C/Eudyptula/01-HelloWorld/hello.ko
+depends:        
+vermagic:       4.1.5-1-ARCH SMP preempt mod_unload modversions 
+
+> insmod hello.ko
+
+> dmesg | tail -n 1
+[ 1367.065778] Hello World!
+
+> lsmod | grep hello
+hello                  16384  0
+
+> rmmod hello
+
+> lsmod | grep hello
+
+> make clean
+make -C /lib/modules/`uname -r`/build M=/home/yutoo/Programming/C/Eudyptula/01-HelloWorld clean
+make[1]: Entering directory '/usr/lib/modules/4.1.5-1-ARCH/build'
+  CLEAN   /home/yutoo/Programming/C/Eudyptula/01-HelloWorld/.tmp_versions
+  CLEAN   /home/yutoo/Programming/C/Eudyptula/01-HelloWorld/Module.symvers
+make[1]: Leaving directory '/usr/lib/modules/4.1.5-1-ARCH/build'
+
+> make KERNEL_DIR=~/linux
+make -C /home/user/linux/ M=/home/user/Programming/C/Eudyptula/01-HelloWorld modules
+make[1]: Entering directory '/home/user/linux'
+  CC [M]  /home/user/Programming/C/Eudyptula/01-HelloWorld/hello.o
+  Building modules, stage 2.
+  MODPOST 1 modules
+  CC      /home/user/Programming/C/Eudyptula/01-HelloWorld/hello.mod.o
+  LD [M]  /home/user/Programming/C/Eudyptula/01-HelloWorld/hello.ko
+make[1]: Leaving directory '/home/user/linux'
+
+> modinfo hello.ko
+filename:       /home/user/Programming/C/Eudyptula/01-HelloWorld/hello.ko
+depends:        
+vermagic:       4.2.0-rc7+ SMP mod_unload 
