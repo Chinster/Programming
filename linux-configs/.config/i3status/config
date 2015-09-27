@@ -1,0 +1,52 @@
+general {
+    colors = true
+    interval = 7
+}
+
+order += "disk /"
+order += "load"
+order += "volume master"
+order += "battery 0"
+order += "wireless wlp3s0"
+order += "ethernet enp2s0"
+order += "tztime local"
+
+wireless wlp3s0 {
+    format_up = "W: %ip %quality"
+    format_down = ""
+}
+
+ethernet enp2s0 {
+    format_up = "E: %ip %speed"
+    format_down = ""
+}
+
+volume master {
+    format = "V: %volume"
+    format_muted = "V: Muted"
+    device = "default"
+    mixer = "Master"
+    mixer_idx = 0
+}
+
+battery 0 {
+    format = "B: %percentage"
+    format_down = ""
+    path = "/sys/class/power_supply/BAT1/uevent"
+
+    integer_battery_capacity = true
+    low_threshold = 20
+    threshold_type = percentage
+}
+
+tztime local {
+    format = "%Y-%m-%d %H:%M"
+}
+
+load {
+    format = "%5min"
+}
+
+disk "/" {
+    format = "%free"
+}
