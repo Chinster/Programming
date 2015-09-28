@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if [ $# -lt 2 ]; then
     echo "./chroot-import [CHROOT-DIR] [BIN]...";
