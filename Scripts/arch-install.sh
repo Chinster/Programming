@@ -35,16 +35,16 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     # Make grub-config now
     # Vars ignore newline
     GRUB_CFG="set default=0
-    set timeout=1
-    insmod part_msdos
-    insmod ext2
+set timeout=1
+insmod part_msdos
+insmod ext2
 
-    menuentry \"Arch\" {
-      set root=(hd0,msdos1)
-      linux /boot/vmlinuz-linux root=$TARGET_DEV_UUID rw
-      initrd /boot/initramfs-linux.img
-    }
-    "
+menuentry \"Arch\" {
+  set root=(hd0,msdos1)
+  linux /boot/vmlinuz-linux root=$TARGET_DEV_UUID rw
+  initrd /boot/initramfs-linux.img
+}
+"
 fi
 
 read -p "Do you want to format $ARCH_TARGET_DEV to ext4?
@@ -68,15 +68,15 @@ cp /etc/resolv.conf $ARCH_TARGET_DIR/etc/resolv.conf
 # We can not run commands in chroot from this script
 # call to chroot is given a script to run
 echo "export PS1='chroot'
-    rm /chroot-script.sh
-    echo $HOSTNAME > /etc/hostname
-    ln -s /usr/share/zoneinfo/America/New_York /etc/localtime
-    sed s/#en_US/en_US/ -i /etc/locale.gen
-    locale-gen
-    echo LANG=en_US.UTF-8 > /etc/locale.conf
-    pacman -Syyyyyyyyyyyyyyyyyyyuuuuuuuuuuuuuuuuuuuuuuuu --noconfirm
-    pacman -S $OTHER_PKGS --noconfirm
-    " > $ARCH_TARGET_DIR/chroot-script.sh
+rm /chroot-script.sh
+echo $HOSTNAME > /etc/hostname
+ln -s /usr/share/zoneinfo/America/New_York /etc/localtime
+sed s/#en_US/en_US/ -i /etc/locale.gen
+locale-gen
+echo LANG=en_US.UTF-8 > /etc/locale.conf
+pacman -Syyyyyyyyyyyyyyyyyyyuuuuuuuuuuuuuuuuuuuuuuuu --noconfirm
+pacman -S $OTHER_PKGS --noconfirm
+" > $ARCH_TARGET_DIR/chroot-script.sh
 
 # Install GRUB
 if [[ $INSTALL_GRUB -eq 1 ]]; then

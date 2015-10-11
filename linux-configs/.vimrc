@@ -44,7 +44,6 @@ syntax on
 set t_Co=256
 colorscheme gentooish
 
-" Highlights column 80
 set colorcolumn=80
 set cursorline
 
