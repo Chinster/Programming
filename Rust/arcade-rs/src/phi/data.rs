@@ -29,24 +29,16 @@ impl Rectangle {
         Some(Rectangle {
             w: self.w,
             h: self.h,
-            x: if self.x < parent.x {
-                parent.x
-            }
+            x: if self.x < parent.x { parent.x }
             else if self.x + self.w >= parent.x + parent.w {
                 parent.x + parent.w - self.w
             }
-            else {
-                self.x
-            },
-            y: if self.y < parent.y {
-                parent.y
-            }
+            else { self.x },
+            y: if self.y < parent.y { parent.y }
             else if self.y + self.h >= parent.y + parent.h {
                 parent.y + parent.h - self.h
             }
-            else {
-                self.y
-            },
+            else { self.y},
         })
     }
 }

@@ -3,7 +3,7 @@ macro_rules! struct_events {
         keyboard: { $( $k_alias:ident : $k_sdl:ident ),* },
         else: { $( $e_alias:ident : $e_sdl:pat ),* }
     ) => {
-        use ::sdl2::event::EventPump;
+        use ::sdl2::EventPump;
 
         pub struct ImmediateEvents {
             $(pub $k_alias: Option<bool>,)*
@@ -21,15 +21,15 @@ macro_rules! struct_events {
             }
         }
 
-        pub struct Events<'p> {
-            pump: EventPump<'p>,
+        pub struct Events {
+            pump: EventPump,
             pub now : ImmediateEvents,
 
             $(pub $k_alias: bool),*
         }
 
-        impl<'p> Events<'p> {
-            pub fn new(pump: EventPump<'p>) -> Events<'p> {
+        impl Events {
+            pub fn new(pump: EventPump) -> Events {
                 Events {
                     pump: pump,
                     now: ImmediateEvents::new(),
@@ -44,10 +44,18 @@ macro_rules! struct_events {
                 for event in self.pump.poll_iter() {
                     use ::sdl2::event::Event::*;
                     use ::sdl2::keyboard::Keycode::*;
+                    use ::sdl2::event::WindowEventId::Resized;
+
                     match event {
+                        Window { win_event_id: Resized, .. } => {
+                            self.now.resize = Some(renderer.output_size()
+                                                           .unwrap());
+                        },
+
                         KeyDown { keycode, .. } => match keycode {
                             $(
                                 Some($k_sdl) =>  {
+                                    // Prevent multiple keypress events
                                     if !self.$k_alias {
                                         self.now.$k_alias = Some(true);
                                     }
@@ -66,9 +74,7 @@ macro_rules! struct_events {
                             ),*
                             _ => {},
                         },
-                        Window { win_event_id: Resized, .. } => {
-                            self.now.resize = Some(renderer.get_output_size().unwrap());
-                        },
+
                         $(
                             $e_sdl => {
                                 self.now.$e_alias = true;
