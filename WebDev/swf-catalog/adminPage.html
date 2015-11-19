@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="index.css">
+		<link rel="stylesheet" type="text/css" href="adminPage.css">
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+		<script src="adminPage.js"></script>
+		<meta name="description" content="The .swf Archive editor">
+		<title>Christopher Chin</title>
+	</head>
+	<body>
+		<a href="/">Home</a>
+		<div id="main">
+			<div id="sideNav">
+				<div id="listWrapper">
+					<ul id="editList">
+					</ul>
+				</div>
+				<button id="submitEdit">Save List Order</button>
+			</div>
+			<div id="displayWindow">
+				<form action="swf_archive/edit" method="POST" enctype="multipart/form-data">
+					<input type="file" name="fileInput" id="fileInput" multiple><br/>
+					<input type="submit" value="Upload">
+				</form>
+			</div>
+	</body>
+</html>

@@ -1,0 +1,27 @@
+body{
+    background:black;
+}
+.button{
+    display:inline-block;
+    width:178px;
+    height:78px;
+    line-height:275%;
+    text-align:center;
+    text-decoration:none;
+    font-family:Garamond sans-serif;
+    font-weight:900;
+    border: 2px dotted white;
+    background-color:#944EB5;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK8AAABLCAIAAACJJUC2AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACnSURBVHhe7dJBEQAwEAOh+jedvm7WBGjgDY4NxAZiA7GB2EBsIDYQG4gNxAZiA7GB2EBsIDYQG4gNxAZiA7GB2EBsIDYQG4gNxAZiA7GB2EBsIDYQG4gNxAZiA7GB2EBsIDYQG4gNxAZiA7GB2EBsIDYQG4gNxAZiA7GB2EBsIDYQG4gNxAZiA7GB2EBsIDYQG4gNxAZiA7GB2EBsIDYQG4gNxAbO9gHizD4pSYyCxAAAAABJRU5ErkJggg==');
+    background-repeat: no-repeat;
+    
+    font-size:1.5em;
+    color:#944eb5;
+    transition-property: background-position, color;
+    transition-duration:0.3s, .5s;
+    transition-timing-function:linear, cubic-bezier(0,0,.75,.25);
+}
+.button:hover{
+    color:#fff;
+    background-position:-176px;
+}

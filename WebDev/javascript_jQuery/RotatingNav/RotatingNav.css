@@ -1,0 +1,41 @@
+#button {
+    border: 1px dashed #999;
+    height:111px;
+    width:106px;
+    text-align:center;
+}
+#button div {
+    border: 3px solid #999;
+    background-color: #CCC;
+    box-shadow: inset 0px 0px 2px 2px #aaa;
+    height:50px;
+    width:100px;
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+    text-align:center;
+}
+#button #top {
+    position:relative;
+    border-bottom:none;
+    border-radius: 100% 100% 0% 0%;
+}
+#button #bottom {
+    position:relative;
+    border-top:none;
+    border-radius: 0% 0% 100% 100%;
+}
+#content {
+    border:3px solid #999;
+    border-right:none;
+    background-color: #CCC;
+    box-shadow: inset 0px 0px 2px 2px #aaa;
+    height:100px;
+    width:500px;
+    display:none;
+    position:absolute;
+    margin-top:-109px;
+    margin-left:53px;
+}

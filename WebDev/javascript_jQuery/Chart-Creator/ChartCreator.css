@@ -1,0 +1,72 @@
+.header {
+    border:1px solid black;
+    border-radius: 2px;
+    padding:5px;
+    background-color:#3DAB63;
+    box-shadow: 0px -2px 3px 0px #24663C inset;
+}
+.delete {
+    display:inline-block;
+    border:1px solid black;
+    width:20px;
+    height:17px;
+    border-radius: 5px;
+    background-color:#f84f4f;
+    color:white;
+    text-align:center;
+    font-style:bold;
+    font-size:14pt;
+    font-family:Arial;
+    padding-bottom:7px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.keyInfo {
+    display:inline-block;
+    position:relative;
+    font-size:9pt;
+    top:-10px;
+}
+#submitButton {
+    box-shadow: 2px -2px 3px 0px #24663C inset, -2px 2px 3px 0px #7bd572 inset;
+    text-align:center;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+#canvasBox {
+    border: 1px dashed black;
+    width:500px;
+    height:500px;
+}
+#canvas div {
+    border:1px solid gray;
+    height:40px;
+    background-color:green;
+    text-align:center;
+    color:white;
+}
+#canvas div:first-child {
+    border-top-left-radius:10px;
+    border-bottom-left-radius:10px;
+}
+#canvas div:last-child {
+    border-top-right-radius:10px;
+    border-bottom-right-radius:10px;
+}
+#key {
+    border:1px dashed black;
+    width:250px;
+    height:300px;
+    padding:5px;
+    float:right;
+    margin-right:30px;
+    margin-top:30%;
+}
