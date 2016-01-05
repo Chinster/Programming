@@ -21,6 +21,25 @@ impl Rectangle {
                      self.h as u32).unwrap()
     }
 
+    pub fn contains(&self, rect: Rectangle) -> bool {
+        let xmin = rect.x;
+        let xmax = xmin + rect.w;
+        let ymin = rect.y;
+        let ymax = ymin + rect.h;
+
+        xmin >= self.x && xmin <= self.x + self.w &&
+        xmax >= self.x && xmax <= self.x + self.w &&
+        ymin >= self.y && ymin <= self.y + self.h &&
+        ymax >= self.x && ymax <= self.y + self.h
+    }
+
+    pub fn overlaps(&self, other: Rectangle) -> bool {
+        self.x < other.x + other.w &&
+            self.x + self.w > other.x &&
+            self.y < other.y + other.h &&
+            self.y + self.h > other.y
+    }
+
     pub fn move_inside(self, parent: Rectangle) -> Option<Rectangle> {
         if self.w > parent.w || self.h > parent.h {
             return None
