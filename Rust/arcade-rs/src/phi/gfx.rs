@@ -61,11 +61,11 @@ impl Sprite {
 }
 
 pub trait CopySprite {
-    fn copy_sprite(&mut self, sprite: &Sprite, dest:Rectangle);
+    fn copy_sprite(&mut self, sprite: &Sprite, dest: Rectangle);
 }
 
 impl<'window> CopySprite for Renderer<'window> {
-    fn copy_sprite(&mut self, sprite: &Sprite, dest:Rectangle) {
+    fn copy_sprite(&mut self, sprite: &Sprite, dest: Rectangle) {
         sprite.render(self, dest);
     }
 }
