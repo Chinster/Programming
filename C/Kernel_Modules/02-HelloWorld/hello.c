@@ -1,3 +1,6 @@
+/* Hello world.
+ * Uses modern macros.
+ */
 #include <linux/module.h>
 
 static int __init hello_init(void)

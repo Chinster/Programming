@@ -1,0 +1,1 @@
+cmd_/home/yutoo/Programming/C/Kernel_Modules/misc/hello_proc.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/yutoo/Programming/C/Kernel_Modules/misc/hello_proc.ko /home/yutoo/Programming/C/Kernel_Modules/misc/hello_proc.o /home/yutoo/Programming/C/Kernel_Modules/misc/hello_proc.mod.o
