@@ -1,5 +1,6 @@
 #obj-m += chardev.o
-obj-m += hello_proc.o
+#obj-m += hello_proc.o
+obj-m += steal_syscall.o
 
 KERNEL_DIR=/lib/modules/`uname -r`/build
 
