@@ -1,3 +1,5 @@
+extern crate nix;
+use nix::sys;
 use std::io::{Write, ErrorKind};
 
 fn getline() -> Option<String> {
@@ -12,14 +14,23 @@ fn getline() -> Option<String> {
     }
 }
 
-fn tokenize(cmd: String) -> Option<Vec<String>> {
-    let tokens = cmd.split_whitespace().collect();
-    Some(tokens)
+fn eval(cmd: String) {
+    let is_background = false;
+
+    let args = cmd.split_whitespace.collect();
+    let process = args[0];
 }
 
 fn main() {
+    sys::syscall()
+    /*
     loop {
-        getline().and_then(tokenize);
-        // if None then return
+        let cmd;
+        match getline() {
+            Some(line) => cmd = line,
+            None => return,
+        }
+        eval(cmd);
     }
+    */
 }
