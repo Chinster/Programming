@@ -1,6 +1,8 @@
 #!/bin/sh
-XDO_TARGET=18874403
+# Clicks repeatedly on a selected window.
+
 XDO_START=`xdotool getactivewindow`
+XDO_TARGET=`xdotool selectwindow`
 
 while true; do
     xdotool windowfocus $XDO_TARGET

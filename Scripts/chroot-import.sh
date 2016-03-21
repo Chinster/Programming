@@ -2,11 +2,11 @@
 # Imports a binary with its linked libraries into a folder
 
 if [ $# -lt 2 ]; then
-    echo "./chroot-import [CHROOT-DIR] [BIN]...";
-    exit;
+    echo "chroot-import CHROOT-DIR BIN..."
+    exit
 fi
 
-cd $1;
+cd $1 || exit
 for bin in "${@:2}"; do
     bin_abs_path=`which $bin`;
     for line in $(ldd $bin_abs_path); do
@@ -28,4 +28,4 @@ for bin in "${@:2}"; do
     cp -n $bin_abs_path $rel_bin;
 
 done;
-cd ..;
+cd -;
