@@ -1,4 +1,5 @@
 #!/bin/bash
+# Imports a binary with its linked libraries into a folder
 
 if [ $# -lt 2 ]; then
     echo "./chroot-import [CHROOT-DIR] [BIN]...";

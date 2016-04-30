@@ -10,5 +10,6 @@ if [ ! $# == 1 ]; then
     \nUsage: wifi-up [CONFIG-NAME]'
     exit 1
 fi
+
 sudo wpa_supplicant -Dnl80211 -iwlp3s0 -c/etc/wpa_supplicant/"$1".conf & disown
 sudo dhcpcd wlp3s0

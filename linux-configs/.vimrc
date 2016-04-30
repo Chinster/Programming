@@ -44,6 +44,10 @@ syntax on
 set t_Co=256
 colorscheme gentooish
 
+<<<<<<< 70edb3302fbe898a75ddac5cb4224bc6e8b4470c
+=======
+" Highlights column 80
+>>>>>>> init commit from private repo migration
 set colorcolumn=80
 set cursorline
 

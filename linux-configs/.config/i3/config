@@ -6,17 +6,17 @@ exec xrdb ~/.Xresources
 exec feh --randomize --bg-center ~/.wallpapers/*
 
 set $mod Mod4
-font pango:DejaVu Sans Mono 8
+font pango:DejaVu Sans Mono 5
 
 # Window options
-new_window pixel 2
+new_window pixel 8
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 #floating_modifier $mod
 
 # start a terminal
 bindsym $mod+Return split h; exec i3-sensible-terminal
-bindsym $mod+Shift+Return split v; exec i3-sensible-terminal; split h;
+bindsym $mod+Shift+Return split v; exec i3-sensible-terminal
 
 # start firefox
 bindsym $mod+ctrl+f exec firefox

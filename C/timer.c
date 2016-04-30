@@ -2,6 +2,8 @@
 #include <limits.h>
 #include <time.h>
 
+// A simple timer
+
 int main(){
     clock_t begin, end;
     double time_spent;

@@ -1,13 +1,12 @@
 #include <linux/module.h>
 
-int init_module()
+int init_module(void)
 {
-	printk(KERN_DEBUG "Hello World!\n");
+	pr_debug("Hello World!\n");
 
 	return 0;
 }
 
-void cleanup_module()
+void cleanup_module(void)
 {
-	return;
 }
