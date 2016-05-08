@@ -42,12 +42,18 @@ set t_Co=256
 " Allows _ to seperate words
 set iskeyword-=_
 
-<<<<<<< 70edb3302fbe898a75ddac5cb4224bc6e8b4470c
-=======
 " Highlights column 80
->>>>>>> init commit from private repo migration
 set colorcolumn=80
 set cursorline
+
+" Prevent EOL at EOF
+" set binary
+" au BufNewFile * set noeol
+
+" Code folding
+set foldmethod=indent
+set foldnestmax=1
+set foldlevel=1
 
 " Save file as sudo
 cmap w!! w !sudo tee > /dev/null %
