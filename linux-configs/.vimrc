@@ -1,7 +1,4 @@
-set nocompatible
-
-" Vundle setup filetype off
-
+" Vundle setup
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
@@ -12,55 +9,38 @@ Plugin 'scrooloose/syntastic'
 call vundle#end()
 filetype indent plugin on
 
-" Better command-line completion
+" Expected editor options
 set wildmenu
-set showcmd
-
 set hlsearch
-" Case insensitive search
-set ignorecase
-set smartcase
-
+set ignorecase   " Case-insensitive search
+set smartcase    " Case-sensitive search when capitalized
 set visualbell
 set number
+syntax on        " Syntax coloring
+set t_Co=256     " Number of colors
+set iskeyword-=_ " Allows _ to seperate words
 
-" 4 spaces.
+" Spacing options
 set shiftwidth=4
 set softtabstop=4
 set expandtab
 
-" Change whitespace size fo certain files
+" File-specific spacing
 autocmd FileType html setlocal shiftwidth=2 tabstop=2
 autocmd FileType css setlocal shiftwidth=2 tabstop=2
 
-" correct backspace key
-set backspace=indent,eol,start
-syntax on
-set nowrap
-set t_Co=256
+" Syntax highlighting
+au BufRead,BufNewFile *.pde set filetype=arduino
+au BufRead,BufNewFile *.ino set filetype=arduino
 
-" Allows _ to seperate words
-set iskeyword-=_
-
-" Highlights column 80
-set colorcolumn=80
-set cursorline
-
-" Prevent EOL at EOF
-" set binary
-" au BufNewFile * set noeol
+" Quality of life options
+set colorcolumn=80 " Highlight column 80
+set cursorline     " Underline current line
 
 " Code folding
 set foldmethod=indent
 set foldnestmax=1
 set foldlevel=1
 
-" Save file as sudo
-cmap w!! w !sudo tee > /dev/null %
-
-" Syntax highlighting for arduino files.
-au BufRead,BufNewFile *.pde set  filetype=arduino
-au BufRead,BufNewFile *.ino set  filetype=arduino
-
-" <Leader> maps to mapleader variable
-let mapleader = ","
+set tags=./tags                     " Ctags
+cmap w!! w !sudo tee > /dev/null %  " Save file as sudo
