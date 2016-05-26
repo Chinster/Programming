@@ -1,0 +1,8 @@
+[package]
+name = "neuralnet"
+version = "0.1.0"
+authors = ["Christopher Chin <ctchin13@gmail.com>"]
+
+[dependencies]
+hound = "1.1.*"
+rand = "0.3.*"
