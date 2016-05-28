@@ -1,8 +1,13 @@
 #!/bin/sh
 # Script installs arch linux.
+# TODO: Install yaourt.
+#  -makepkg requires non-root user. As a result we must install dependencies
+#  -as root, run makepkg as the nobody user, then install the resulting package.
+#  -Somehow we must link the dependencies to the AUR package in pacman's database.
 
 ARCH_TARGET_DIR=$2
-OTHER_PKGS="git vim"
+OTHER_PKGS="git vim wpa_supplicant alsa-utils"
+EXTRA_PKGS="sway rxvt-unicode firefox"
 
 # Check for root
 if [[ $EUID -ne 0 ]]; then
@@ -46,9 +51,12 @@ locale-gen
 echo LANG=en_US.UTF-8 > /etc/locale.conf
 pacman -Syyyyyyyyyyyyyyyyyyyuuuuuuuuuuuuuuuuuuuuuuuu --noconfirm
 pacman -S $OTHER_PKGS --noconfirm
+pacman -S $EXTRA_PKGS --noconfirm
 exit
 " > $ARCH_TARGET_DIR/chroot-script.sh
 
 chmod a+x $ARCH_TARGET_DIR/chroot-script.sh
 
 arch-chroot $ARCH_TARGET_DIR /chroot-script.sh
+
+echo "Don't forget to setup your bootloader!"
