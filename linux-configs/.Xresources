@@ -1,3 +1,4 @@
+URxvt*scrollBar: false
 ! special
 *.foreground:   #ffffff
 *.background:   #090909
