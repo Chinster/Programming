@@ -43,4 +43,5 @@ set foldnestmax=1
 set foldlevel=1
 
 set tags=./tags                     " Ctags
-cmap w!! w !sudo tee > /dev/null %  " Save file as sudo
+" Save file as root
+cmap w!! w !sudo tee > /dev/null %
