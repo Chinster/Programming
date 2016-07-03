@@ -7,6 +7,7 @@ new_window pixel 1
 # Border colors
 client.focused #b26ec4 #b26ec4 #ffffff #b26ec4 #b26ec4
 
+focus_follows_mouse no
 
 ### Variables
 #
