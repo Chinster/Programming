@@ -1,0 +1,4 @@
+#!/bin/sh
+# Small script to link all the opencv libraries whilst compiling.
+set -x
+g++ `pkg-config opencv --cflags --libs` $1 -o ${1%.cpp}
