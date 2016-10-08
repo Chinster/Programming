@@ -1,17 +1,25 @@
 /* Creates a read-only char device that says how many times it has been
  * read.
  */
-
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/fs.h>
+#include <linux/device.h>
+#include <linux/cdev.h>
+#include <linux/kdev_t.h>
+#include <linux/version.h>
+
 #include <asm/uaccess.h>
 
-#define SUCCESS 0
 #define DEV_NAME "chardev"    // Name as it appears in /proc/devices
 #define BUF_LEN 80
+#define DEVICE_CNT 1
 
-static int Major;
+static dev_t dev;
+static struct class *cl;
+static struct cdev c_dev;
+
+
 static int Device_Open = 0;
 
 static char msg[BUF_LEN];
@@ -33,28 +41,52 @@ static struct file_operations fops = {
  */
 int init_module(void)
 {
-    Major = register_chrdev(0, DEV_NAME, &fops);
-
-    if (Major < 0) {
-        printk(KERN_ALERT "Registering char device failed: %d\n", Major);
-        return Major;
+    // Register device with kernel, major number dynamically allocated
+    int res = alloc_chrdev_region(&dev, 0, DEVICE_CNT, DEV_NAME);
+    if (res < 0) {
+        printk(KERN_ALERT "chardev: could not register a device\n");
+        return res;
     }
 
-    printk(KERN_INFO "Char-dev assigned major number %d. To talk to "
-                     "the driver, create a dev file with\n", Major);
-    printk(KERN_INFO "'mknod /dev/%s c %d 0'\n", DEV_NAME, Major);
-    printk(KERN_INFO "Try various minor numbers. Try to cat and echo to "
-                     "the device file.\n Remove the device file "
-                     "and module when done.\n");
+    // Initialize struct class
+    cl = class_create(THIS_MODULE, DEV_NAME);
+    if (!cl) {
+        printk(KERN_ALERT "chardev: could not create class\n");
+        goto error1;
+    }
 
-    return SUCCESS;
+    // Create device and register with sysfs
+    if (device_create(cl, NULL, dev, NULL, DEV_NAME) == NULL) {
+        printk(KERN_ALERT "chardev: could not create device\n");
+        goto error2;
+    }
+
+    // Add the device to the file system
+    cdev_init(&c_dev, &fops);
+    if (cdev_add(&c_dev, dev, DEVICE_CNT) < 0) {
+        printk(KERN_ALERT "chardev: could not create char device on sysfs\n");
+        goto error3;
+    }
+
+    printk(KERN_INFO "chardev: registered %d device\n", MAJOR(dev));
+    return 0;
+error3:
+    device_destroy(cl, dev);
+error2:
+    class_destroy(cl);
+error1:
+    unregister_chrdev_region(dev, DEVICE_CNT);
+    return -1;
 }
 
 /* Called when module is unloaded.
  */
 void cleanup_module(void)
 {
-    unregister_chrdev(Major, DEV_NAME);
+    cdev_del(&c_dev);
+    device_destroy(cl, dev);
+    class_destroy(cl);
+    unregister_chrdev_region(dev, DEVICE_CNT);
 }
 
 /* Called when a process tries to open the device file.
@@ -68,11 +100,11 @@ static int device_open(struct inode *inode, struct file *file)
         return -EBUSY;
 
     Device_Open++;
-    sprintf(msg, "I already told you %d times Hello world!\n", counter++);
+    sprintf(msg, "I already told you %d times chardev world!\n", counter++);
     msg_ptr = msg;
     try_module_get(THIS_MODULE);
 
-    return SUCCESS;
+    return 0;
 }
 
 /* Called when a process closes the device file.
@@ -111,7 +143,7 @@ static ssize_t device_read(struct file *file_ptr, char *buffer,
 }
 
 /* Called when a process tries to write to the device file.
- * As in "echo hi > /dev/hello"
+ * As in "echo hi > /dev/chardev"
  */
 static ssize_t device_write(struct file* file_ptr, const char *buff,
                             size_t len, loff_t *off)
@@ -119,3 +151,6 @@ static ssize_t device_write(struct file* file_ptr, const char *buff,
     printk(KERN_ALERT "Sorry, this operation isn't supported.\n");
     return -EINVAL;
 }
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Christopher Chin");
