@@ -127,14 +127,13 @@ static ssize_t device_write(struct file* file_ptr, const char *buff,
 {
     size_t strlen = strlen_user(buff);
     char *buff_ptr = buff;
+    buff_ptr[len - 1] = '\0'; // Sometimes the caller forgets to add this.
     char *token;
     int index = 0;
 
-    //printk(KERN_INFO "Len %d\n", len);
     // Tokenize input buffer into a command.
     token = strsep(&buff_ptr, " \n");
     while (token != NULL) {
-	   //printk(KERN_INFO "Got %s\n", token);
 	// Possible if multiple sequential delimiters.
 	if (token[0] != '\0') 
 	    argv[index++] = token;
