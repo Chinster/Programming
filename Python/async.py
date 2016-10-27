@@ -4,7 +4,7 @@ import asyncio
 import sys
 
 @asyncio.coroutine
-def create_stream(callback):
+def create_stream(callbacks):
     process = yield from asyncio.create_subprocess_exec('./fake.sh',
                                              #"--no-uintput",
                                              #"--detach-kernel-driver"],
@@ -13,11 +13,18 @@ def create_stream(callback):
     while True:
         line = yield from process.stdout.readline()
         if line:
-            callback(line)
+            for cb in callbacks:
+                cb()
         else:
             break
 
     return process
+
+def blocking():
+    print("Handled")
+
+def handler():
+    print("Hi")
 
 if sys.platform == "win32":
     loop = asyncio.ProactorEventLoop()
@@ -25,6 +32,5 @@ if sys.platform == "win32":
 else:
     loop = asyncio.get_event_loop()
 
-loop.run_until_complete(create_stream(lambda x: print("%s" % x)))
-loop.close()
-
+handlers = [blocking, handler]
+loop.run_until_complete(create_stream(handlers))
