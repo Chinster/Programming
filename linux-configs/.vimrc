@@ -34,7 +34,6 @@ au BufRead,BufNewFile *.pde set filetype=arduino
 au BufRead,BufNewFile *.ino set filetype=arduino
 
 " Quality of life options
-set colorcolumn=80 " Highlight column 80
 set cursorline     " Underline current line
 
 " Code folding
@@ -42,6 +41,7 @@ set foldmethod=indent
 set foldnestmax=1
 set foldlevel=1
 
-set tags=./tags                     " Ctags
-" Save file as root
+"Ctags
+set tags=./tags
+" Save file as sudo
 cmap w!! w !sudo tee > /dev/null %
