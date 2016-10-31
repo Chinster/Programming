@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 import asyncio
+import sys
 from enum import Enum
 
-# Enum for controller events. Values are completely arbitrary.
+# Enum for controller events. Values are arbitrary but unique.
 class Button(Enum):
     A, B, X, Y = range(0, 4)
     LStick, RStick, LTrigger, RTrigger = range(4, 8)
@@ -13,28 +14,49 @@ class Button(Enum):
     Guide = 18   # This is the Xbox button on the Xbox controller
 
 class Joystick:
-    @asyncio.coroutine
-    def init():
-        self.proc = yield from asyncio.create_subprocess_exec('./fake.sh',
-                                                 #"--no-uintput",
-                                                 #"--detach-kernel-driver"],
+    @classmethod
+    async def create(cls):
+        self = Joystick()
+        self.proc = await asyncio.create_subprocess_exec("xboxdrv",
+                                                 "--no-uinput",
+                                                 "--detach-kernel-driver",
                                                  stdout=asyncio.subprocess.PIPE)
 
+        # Init callback dict
+        self.handlers = {}
+        for b in Button:
+            self.handlers[b] = []
+
+        # Evaluate xboxdrv preample.
+        # This could likely use some improvement
         while True:
-            line = yield from process.stdout.readline()
+            line = await self.proc.stdout.readline()
             if line:
-                call_handlers(line)
+                if b'Press Ctrl-C' in line:
+                    break
+                if b'ERROR' in line:
+                    print(await self.proc.stdout.readline()) # Next line is error message
+                    raise OSError('Error running xboxdrv')
+            else:
+                raise RuntimeError('Failed to read xboxdrv')
+
+        return self
+
+    async def init(self):
+        while True:
+            line = await self.proc.stdout.readline()
+            if line:
+                self.call_handlers(line)
             else:
                 break
 
-        return process
+        return self
 
-    def onButton(button, callback):
+    def onButton(self, button, callback):
         self.handlers[button].append(callback)
 
     # Each handler will parse its portion of the input line
-    def call_handlers(line):
-        print(line)
+    def call_handlers(self, line):
         self.handleLStick(line)
         self.handleRStick(line)
         self.handleDpad(line)
@@ -43,10 +65,7 @@ class Joystick:
         self.handleBumpers(line)
         self.handleTriggers(line)
 
-    def handleLStick(line):
-        print("leftX: %s" % line[3:9])
-        print("leftY: %s" % line[13:19])
-
+    def handleLStick(self, line):
         if self.handlers[Button.LStick]:
             leftX = self.axisScale(int(line[3:9]))
             leftY = self.axisScale(int(line[13:19]))
@@ -58,7 +77,7 @@ class Joystick:
             for cb in self.handlers[Button.L3]:
                 cb()
 
-    def handleRStick(line):
+    def handleRStick(self, line):
         if self.handlers[Button.RStick]:
             rightX = self.axisScale(int(line[24:30]))
             rightY = self.axisScale(int(line[34:40]))
@@ -70,7 +89,7 @@ class Joystick:
             for cb in self.handlers[Button.R3]:
                 cb()
 
-    def handleDpad(line):
+    def handleDpad(self, line):
         if self.handlers[Button.DpadU] and int(line[45:46]):
             for cb in self.handlers[Button.DpadU]:
                 cb()
@@ -87,49 +106,49 @@ class Joystick:
             for cb in self.handlers[Button.DpadR]:
                 cb()
 
-    def handleSpecialButtons(line):
-        if self.handlers([Button.Back]) and int(line[68:69]):
+    def handleSpecial(self, line):
+        if self.handlers[Button.Back] and int(line[68:69]):
             for cb in self.handlers[Button.Back]:
                 cb()
 
-        if self.handlers([Button.Guide]) and int(line[76:77]):
+        if self.handlers[Button.Guide] and int(line[76:77]):
             for cb in self.handlers[Button.Guide]:
                 cb()
 
-        if self.handlers([Button.Start]) and int(line[84:85]):
+        if self.handlers[Button.Start] and int(line[84:85]):
             for cb in self.handlers[Button.Start]:
                 cb()
 
-    def handleActionButtons(line):
-        if self.handlers([Button.A]) and int(line[100:101]):
+    def handleActionButtons(self, line):
+        if self.handlers[Button.A] and int(line[100:101]):
             for cb in self.handlers[Button.A]:
                 cb()
 
-        if self.handlers([Button.B]) and int(line[104:105]):
+        if self.handlers[Button.B] and int(line[104:105]):
             for cb in self.handlers[Button.B]:
                 cb()
-        if self.handlers([Button.X]) and int(line[108:109]):
+        if self.handlers[Button.X] and int(line[108:109]):
             for cb in self.handlers[Button.X]:
                 cb()
-        if self.handlers([Button.Y]) and int(line[112:113]):
+        if self.handlers[Button.Y] and int(line[112:113]):
             for cb in self.handlers[Button.Y]:
                 cb()
 
-    def handleBumpers(line):
-        if self.handlers([Button.LB]) and int(line[118:119]):
+    def handleBumpers(self, line):
+        if self.handlers[Button.LB] and int(line[118:119]):
             for cb in self.handlers[Button.LB]:
                 cb()
 
-        if self.handlers([Button.RB]) and int(line[123:124]):
+        if self.handlers[Button.RB] and int(line[123:124]):
             for cb in self.handlers[Button.RB]:
                 cb()
 
-    def handleTriggers(line):
-        if self.handlers([Button.LTrigger]):
+    def handleTriggers(self, line):
+        if self.handlers[Button.LTrigger]:
             for cb in self.handlers[Button.LTrigger]:
                 cb(int(line[129:132]) / 255.0)    # scale trigger values from 0 to 1
 
-        if self.handlers([Button.RTrigger]):
+        if self.handlers[Button.RTrigger]:
             for cb in self.handlers[Button.RTrigger]:
                 cb(int(line[136:139]) / 255.0)    # scale trigger values from 0 to 1
 
@@ -144,9 +163,16 @@ class Joystick:
             else:
                 return (raw - deadzone) / (32767.0 - deadzone)
 
-    def close():
+    def close(self):
         self.proc.kill()
 
+async def example():
+    joy = await Joystick.create()
+    joy.onButton(Button.A, lambda: print('A pressed'))
+    joy.onButton(Button.LStick, lambda x, y: print('Stick at %f, %f' % (x, y)))
+    joy.onButton(Button.LTrigger, lambda x: print('Trigger at %f' % x))
+    joy = await joy.init()
+    joy.close()
 
 if __name__ == "__main__":
     if sys.platform == "win32":
@@ -155,7 +181,4 @@ if __name__ == "__main__":
     else:
         loop = asyncio.get_event_loop()
 
-    joy = Joystick.init()
-    joy.onButton(Button.A, lambda: print('Hi'))
-    loop.run_until_complete(joy)
-    joy.close()
+    loop.run_until_complete(example())
