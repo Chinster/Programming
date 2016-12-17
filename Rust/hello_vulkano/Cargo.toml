@@ -1,0 +1,7 @@
+[package]
+name = "hello_vulkano"
+version = "0.1.0"
+authors = ["Christopher Chin <ctchin13@gmail.com>"]
+
+[dependencies]
+vulkano = { git = "https://github.com/tomaka/vulkano" }
