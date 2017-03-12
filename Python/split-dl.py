@@ -1,3 +1,5 @@
+""" Split a url download into multiple sections and merge the seperate downloads
+"""
 import os
 from sys import argv
 import urllib.request
@@ -52,7 +54,7 @@ def create_threads(segments):
                                     args = (start, segment, i))
     return array
 
-def main():
+if __name__ == "__main__":
     argvparse()
     gen_info()
 
@@ -71,5 +73,3 @@ def main():
         tmp_name = "/tmp/" + file_name + str(i)
         os.system("cat " + tmp_name  + " >> " + file_name)
         os.remove(tmp_name)
-
-main()
