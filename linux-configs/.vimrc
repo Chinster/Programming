@@ -1,5 +1,4 @@
 " Vundle setup
-" git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
@@ -11,6 +10,7 @@ call vundle#end()
 filetype indent plugin on
 
 " Expected editor options
+set wildmode=longest,list
 set wildmenu
 set hlsearch
 set ignorecase   " Case-insensitive search
@@ -46,3 +46,8 @@ set foldlevel=1
 set tags=./tags
 " Save file as sudo
 cmap w!! w !sudo tee > /dev/null %
+
+command Spell setlocal spell spelllang=en_us
+
+"set list
+"set lcs=space:.
