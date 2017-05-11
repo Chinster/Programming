@@ -1,5 +1,7 @@
 #!/bin/sh
 
+INTERFACE=wlp2s0
+
 if [[ $EUID -ne $ROOT_UID ]]; then
     echo "This script must be run as root"
     exit 1
@@ -11,5 +13,6 @@ if [ ! $# == 1 ]; then
     exit 1
 fi
 
-sudo wpa_supplicant -Dnl80211 -iwlp3s0 -c/etc/wpa_supplicant/"$1".conf & disown
-sudo dhcpcd wlp3s0
+sudo wpa_supplicant -Dnl80211 -i "$INTERFACE" -c/etc/wpa_supplicant/"$1".conf & disown
+sleep 2
+sudo dhcpcd "$INTERFACE"

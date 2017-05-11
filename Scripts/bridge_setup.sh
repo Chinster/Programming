@@ -1,10 +1,18 @@
 #!/bin/sh
 
-ip l s  enp2s0 down
-ip l a br0 type bridge
+BRIDGE=br0
+ETH=enp3s0f1
+WIFI=wlp2s0
 
-ip l s enp2s0 promisc on
-ip l s enp2s0 up
-ip l s enp2s0 master br0
+if [ $# == 1 ];
+then
+    BRIDGE=$1
+fi
 
-dhcpcd br0
+ip l s dev $ETH down
+
+ip l a dev $BRIDGE type bridge
+ip l s dev $ETH master $BRIDGE
+
+ip l s dev $ETH up
+ip l s dev $BRIDGE up

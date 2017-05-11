@@ -1,0 +1,9 @@
+qemu-system-x86_64 -cdrom ~/Downloads/ubuntu-16.04.1-desktop-amd64.iso -boot order=d -m 4G -cpu host -smp 2 -machine type=q35,accel=kvm -enable-kvm -drive file=ubuntu16-recent,format=raw
+qemu-img create -f raw ubuntu16-recent 8G
+qemu-system-x86_64 -m 4G -cpu host -smp 2 -machine type=q35,accel=kvm -enable-kvm -drive file=ubuntu12-ros,format=raw
+qemu-system-x86_64 -m 8G -cpu host -smp 4 -vga vmware -machine type=q35,accel=kvm -enable-kvm -drive file=win10-robotstudio,format=raw
+qemu-system-x86_64 -cdrom ~/Downloads/Win10_1607_English_x64.iso -boot order=d -m 8G -cpu host -smp 2 -machine type=q35,accel=kvm -enable-kvm -drive file=win10.qcow2,if=virtio -drive file=~/Downloads/virtio-win-0.1.126.iso,media=cdrom
+qemu-system-x86_64 -m 8G -cpu host -smp sockets=1,cores=2,threads=2 -vga vmware -machine type=q35,accel=kvm -enable-kvm -drive file=win10.qcow2,format=qcow2,if=virtio
+qemu-system-x86_64 -m 8G -cpu host -smp sockets=1,cores=2,threads=2 -vga vmware -machine type=q35,accel=kvm -enable-kvm -drive file=win10.qcow2,format=qcow2,if=virtio -net vde -net nic,model=virtio -cdrom ~/Downloads/virtio-win-0.1.126.iso
+qemu-system-x86_64 -m 8G -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time -smp sockets=1,cores=2,threads=2 -vga vmware -machine type=q35,accel=kvm -enable-kvm -drive file=win10.qcow2,format=qcow2,if=virtio -net tap,ifname=tap0,script=no,downscript=no,vhost=on -net nic,model=virtio
+qemu-system-x86_64 -m 8G -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time -smp sockets=1,cores=2,threads=2 -vga vmware -machine type=q35,accel=kvm -enable-kvm -drive file=win10.qcow2,format=qcow2,if=virtio -net nic,model=virtio -net bridge,br=br0
