@@ -1,6 +1,8 @@
 ### Run on start
 exec xrdb ~/.Xresources
-exec feh --randomize --bg-center ~/.wallpapers/*
+exec xbindkeys -p
+exec setxkbmap -option ctrl:nocaps
+#exec feh --randomize --bg-center ~/.wallpapers/*
 
 # Disable titlebar
 new_window pixel 1
@@ -38,7 +40,7 @@ set $term urxvt
     floating_modifier $mod
 
     # reload the configuration file
-    bindsym $mod+Shift+c reload
+    bindsym $mod+Shift+r restart
 
     # exit sway (logs you out of your wayland session)
     bindsym $mod+Shift+e exit
@@ -127,21 +129,18 @@ set $term urxvt
 # Program hotkeys:
 #
     bindsym $mod+ctrl+f exec firefox
-    bindsym $mod+ctrl+g exec unity-editor
 
 
 #
 # Status Bar:
 #
 bar {
-    bindsym button4 nop
-    bindsym button5 nop
     status_command i3status
     colors {
         statusline #ffffff
         background #323232
 
         inactive_workspace #323232 #323232 #5c5c5c
-        focused_workspace #b26ec4 #88379e #ffffff
+        focused_workspace #b26ec4 #a631c4 #ffffff
     }
 }

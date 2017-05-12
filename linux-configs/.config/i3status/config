@@ -1,38 +1,40 @@
 general {
     colors = true
     interval = 7
+    color_good = "#b26ec4"
+    color_bad = "#d1ce06"
+    color_degraded = "#dbd96b"
 }
 
-order += "disk /"
-order += "load"
+order += "wireless wlp2s0"
+order += "ethernet enp3s0f1"
 order += "volume master"
 order += "battery 0"
-order += "wireless wlp3s0"
-order += "ethernet enp2s0"
+order += "load"
 order += "tztime local"
 
-wireless wlp3s0 {
-    format_up = "W: %ip %quality"
+wireless wlp2s0 {
+    format_up = "%bitrate"
     format_down = ""
 }
 
-ethernet enp2s0 {
-    format_up = "E: %ip %speed"
+ethernet enp3s0f1 {
+    format_up = "%speed"
     format_down = ""
 }
 
 volume master {
-    format = "V: %volume"
-    format_muted = "V: Muted"
+    format = "V:%volume"
+    format_muted = "V:Muted"
     device = "default"
     mixer = "Master"
     mixer_idx = 0
 }
 
 battery 0 {
-    format = "B: %percentage"
+    format = "B:%percentage"
     format_down = ""
-    path = "/sys/class/power_supply/BAT1/uevent"
+    path = "/sys/class/power_supply/BAT0/uevent"
 
     integer_battery_capacity = true
     low_threshold = 20
@@ -40,7 +42,7 @@ battery 0 {
 }
 
 tztime local {
-    format = "%Y-%m-%d %H:%M"
+    format = "%H:%M"
 }
 
 load {
